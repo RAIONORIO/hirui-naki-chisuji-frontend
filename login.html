@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Hirui Naki Chisuji</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- =========================================
+         NAVBAR
+    ========================================== -->
+
+    <header class="navbar">
+
+        <a href="index.html">
+
+            <img src="assets/logo.png"
+                 class="logo"
+                 alt="Logo">
+
+        </a>
+
+        <nav>
+
+            <a href="index.html">HOME</a>
+            <a href="chapters.html">CAPÍTULOS</a>
+            <a href="characters.html">PERSONAGENS</a>
+            <a href="cla.html">CLÃS</a>
+            <a href="universo.html">UNIVERSO</a>
+            <a href="gallery.html">GALERIA</a>
+            <a href="login.html" class="active">LOGIN</a>
+
+        </nav>
+
+    </header>
+
+    <!-- =========================================
+         LOGIN
+    ========================================== -->
+
+    <section class="login-hero">
+
+        <div class="login-overlay"></div>
+
+        <div class="login-container">
+
+            <span class="login-tag">
+
+                HIRUI NAKI CHISUJI
+
+            </span>
+
+            <h1>
+
+                ÁREA DO LEITOR
+
+            </h1>
+
+            <p>
+
+                Entre na sua conta para receber novidades,
+                capítulos inéditos e conteúdos exclusivos.
+
+            </p>
+
+            <form id="login-form"
+                  class="login-form">
+
+                <input
+                    type="email"
+                    id="login-email"
+                    placeholder="E-mail"
+                    required>
+
+                <input
+                    type="password"
+                    id="login-password"
+                    placeholder="Senha"
+                    required>
+
+                <button type="submit">
+
+                    ENTRAR
+
+                </button>
+
+            </form>
+
+            <div id="login-message"></div>
+
+<div class="forgot-password-link">
+
+    <button type="button" id="show-recovery-form">
+        ESQUECI MINHA SENHA
+    </button>
+
+</div>
+
+<form
+    id="password-recovery-form"
+    class="password-recovery-form"
+    style="display: none;"
+>
+
+    <input
+        type="email"
+        id="recovery-email"
+        placeholder="E-mail cadastrado"
+        required
+    >
+
+    <input
+        type="text"
+        id="recovery-phone"
+        placeholder="Telefone cadastrado"
+    >
+
+    <button type="submit">
+        ENVIAR SOLICITAÇÃO
+    </button>
+
+</form>
+
+<div id="password-recovery-message"></div>
+
+<div class="register-link">
+
+    Não possui conta?
+
+    <a href="register.html">
+
+        Criar conta
+
+    </a>
+
+</div>
+
+    </section>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

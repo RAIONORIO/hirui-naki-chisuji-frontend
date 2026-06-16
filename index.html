@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <!-- =========================================
+         CONFIGURAÇÕES DA PÁGINA
+    ========================================== -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hirui Naki Chisuji</title>
+
+    <!-- CSS PRINCIPAL -->
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- =========================================
+         NAVBAR / MENU PRINCIPAL
+    ========================================== -->
+
+    <header class="navbar">
+
+        <img src="assets/logo.png" class="logo" alt="Logo Hirui Naki Chisuji">
+
+        <div class="menu-toggle" id="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <nav id="nav-menu">
+            <a href="index.html">HOME</a>
+            <a href="chapters.html">CAPÍTULOS</a>
+            <a href="characters.html">PERSONAGENS</a>
+            <a href="cla.html">CLÃS</a>
+            <a href="universo.html">UNIVERSO</a>
+            <a href="gallery.html">GALERIA</a>
+            <a href="login.html">LOGIN</a>
+        </nav>
+
+    </header>
+
+    <!-- =========================================
+         HERO PRINCIPAL DA HOME
+    ========================================== -->
+
+    <section class="hero">
+
+        <img src="assets/hero.jpg" class="hero-image" alt="Imagem principal de Hirui Naki Chisuji">
+
+        <div class="overlay"></div>
+
+        <div class="hero-content">
+
+            <span class="mini-text">
+                EM UM JAPÃO DEVASTADO POR SANGUE E VINGANÇA...
+            </span>
+
+            <h1>HIRUI NAKI CHISUJI</h1>
+
+            <p>
+                Guerreiros caminham entre honra,
+                maldição e morte.
+            </p>
+
+            <div class="hero-buttons">
+
+                <button
+                    class="read-btn"
+                    onclick="window.location.href='chapters.html'"
+                >
+                    CAPÍTULOS
+                </button>
+
+                <button
+                    class="about-btn"
+                    onclick="document.querySelector('.home-synopsis').scrollIntoView({ behavior: 'smooth' })"
+                >
+                    SAIBA MAIS
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- =========================================
+         CONTINUAR LEITURA
+    ========================================== -->
+
+    <section id="continue-reading-section" class="continue-reading-section">
+
+        <div class="continue-reading-card">
+
+            <span>CONTINUAR LEITURA</span>
+
+            <h2 id="continue-reading-title">
+                Você ainda não iniciou uma leitura.
+            </h2>
+
+            <p id="continue-reading-info">
+                Entre em sua conta e leia um capítulo para salvar seu progresso.
+            </p>
+
+            <button id="continue-reading-btn">
+                CONTINUAR
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- =========================================
+         SINOPSE DA HISTÓRIA
+    ========================================== -->
+
+    <section class="home-synopsis">
+
+        <div class="home-synopsis-content">
+
+            <span>SINOPSE</span>
+
+            <h2>HIRUI NAKI CHISUJI</h2>
+
+            <p>
+                Num mundo feudal dilacerado pela guerra, o Clã Kurotsuki reina supremo há gerações.
+                Sua força é lendária, seu domínio, absoluto. Dizem que sua vitória não vem apenas
+                de espadas, mas de um pacto antigo com algo que habita as sombras.
+            </p>
+
+            <p>
+                Quando Rin, uma jovem marcada pela perda, se vê forçada a fazer uma aliança perigosa
+                com Katsuro, um capitão de um clã rival, ela acredita estar apenas jogando um jogo
+                político mortal. Mas sua busca por justiça desenterra um segredo primitivo e adormecido,
+                despertando forças que há muito foram confinadas à escuridão.
+            </p>
+
+            <p>
+                Agora, uma guerra muito mais profunda começa. Uma guerra que testará os limites da
+                lealdade, do sacrifício e da própria natureza humana. Porque alguns inimigos não estão
+                do outro lado do campo de batalha. Eles estão dentro de você.
+            </p>
+
+            <strong>
+                Onde cada escolha tem um preço de sangue, e a maior batalha é contra a herança que você nunca pediu para ter.
+            </strong>
+
+        </div>
+
+    </section>
+
+    <!-- =========================================
+         RODAPÉ / FOOTER
+    ========================================== -->
+
+    <footer class="footer">
+
+        <div class="footer-logo">
+            <img src="assets/logo.png" alt="Logo Hirui Naki Chisuji">
+        </div>
+
+        <div class="footer-links">
+
+            <div class="footer-column">
+
+                <h3>NAVEGAÇÃO</h3>
+
+                <a href="index.html">HOME</a>
+                <a href="chapters.html">CAPÍTULOS</a>
+                <a href="characters.html">PERSONAGENS</a>
+
+            </div>
+
+            <div class="footer-column">
+
+                <h3>UNIVERSO</h3>
+
+                <a href="cla.html">CLÃS</a>
+                <a href="universo.html">LORE</a>
+                <a href="gallery.html">GALERIA</a>
+
+            </div>
+
+            <div class="footer-column">
+
+                <h3>REDES</h3>
+
+                <a href="#">INSTAGRAM</a>
+                <a href="#">YOUTUBE</a>
+                <a href="#">DISCORD</a>
+
+            </div>
+
+        </div>
+
+        <div class="footer-copy">
+            © 2026 Hirui Naki Chisuji. Todos os direitos reservados.
+        </div>
+
+    </footer>
+
+    <script src="script.js"></script>
+<script src="admin-access.js"></script>
+
+</body>
+
+</html>

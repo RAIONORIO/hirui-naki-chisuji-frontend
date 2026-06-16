@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Meu Perfil | Hirui Naki Chisuji</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body class="protected-page">
+
+    <!-- =========================================
+         NAVBAR
+    ========================================== -->
+
+    <header class="navbar">
+
+        <a href="index.html">
+            <img
+                src="assets/logo.png"
+                class="logo"
+                alt="Logo Hirui Naki Chisuji"
+            >
+        </a>
+
+        <nav id="nav-menu">
+
+            <a href="index.html">HOME</a>
+            <a href="store.html">LOJA</a>
+
+        </nav>
+
+    </header>
+
+    <!-- =========================================
+         PERFIL DO LEITOR
+    ========================================== -->
+
+    <main class="reader-profile-page">
+
+        <section class="reader-profile-container">
+
+            <div class="reader-profile-header">
+
+                <span>CONTA DO LEITOR</span>
+
+                <h1>MEU PERFIL</h1>
+
+                <p>
+                    Gerencie seus dados, senha, avatar e progresso de leitura.
+                </p>
+
+            </div>
+
+            <div class="reader-profile-layout">
+
+                <!-- =========================================
+                     CARD PRINCIPAL
+                ========================================== -->
+
+                <section class="reader-profile-card reader-profile-main-card">
+
+                    <div class="reader-profile-avatar-area">
+
+                        <div class="reader-profile-avatar-frame">
+
+                            <img
+                                id="profile-avatar-image"
+                                src="assets/avatars/default-avatar.png"
+                                alt="Avatar do usuário"
+                            >
+
+                        </div>
+
+                        <div class="reader-profile-avatar-text">
+
+                            <span>AVATAR ATUAL</span>
+
+                            <h2 id="profile-avatar-title">
+                                Avatar Padrão
+                            </h2>
+
+                            <p id="profile-avatar-description">
+                                Avatar inicial concedido a todos os leitores.
+                            </p>
+
+                            <button
+                                type="button"
+                                class="profile-action-button"
+                                id="open-avatar-modal"
+                            >
+                                EDITAR AVATAR
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="reader-profile-user-summary">
+
+                        <span>LEITOR</span>
+
+                        <h2 id="profile-display-name">
+                            Carregando...
+                        </h2>
+
+                        <p id="profile-display-email">
+                            Carregando...
+                        </p>
+
+                    </div>
+
+                </section>
+
+                <!-- =========================================
+                     DADOS DA CONTA
+                ========================================== -->
+
+                <section class="reader-profile-card">
+
+                    <div class="reader-profile-card-header">
+
+                        <span>DADOS</span>
+
+                        <h2>DADOS DA CONTA</h2>
+
+                        <p>
+                            Clique no campo que deseja alterar.
+                        </p>
+
+                    </div>
+
+                    <div class="reader-profile-info-list">
+
+                        <button
+                            type="button"
+                            class="reader-profile-info-row"
+                            data-edit-field="nome"
+                        >
+
+                            <span>
+                                <small>Nome</small>
+                                <strong id="profile-name">Carregando...</strong>
+                            </span>
+
+                            <em>EDITAR</em>
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="reader-profile-info-row"
+                            data-edit-field="apelido"
+                        >
+
+                            <span>
+                                <small>Apelido</small>
+                                <strong id="profile-nickname">Carregando...</strong>
+                            </span>
+
+                            <em>EDITAR</em>
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="reader-profile-info-row"
+                            data-edit-field="email"
+                        >
+
+                            <span>
+                                <small>Email</small>
+                                <strong id="profile-email">Carregando...</strong>
+                            </span>
+
+                            <em>EDITAR</em>
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="reader-profile-info-row"
+                            data-edit-field="telefone"
+                        >
+
+                            <span>
+                                <small>Telefone</small>
+                                <strong id="profile-phone">Carregando...</strong>
+                            </span>
+
+                            <em>EDITAR</em>
+
+                        </button>
+
+                        <div class="reader-profile-info-row reader-profile-info-row-static">
+
+                            <span>
+                                <small>Status da conta</small>
+                                <strong id="profile-status">Carregando...</strong>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <p
+                        id="profile-edit-message"
+                        class="reader-profile-message"
+                    ></p>
+
+                </section>
+
+                <!-- =========================================
+                     SEGURANÇA
+                ========================================== -->
+
+                <section class="reader-profile-card">
+
+                    <div class="reader-profile-card-header">
+
+                        <span>SEGURANÇA</span>
+
+                        <h2>ALTERAR SENHA</h2>
+
+                        <p>
+                            A alteração de senha abre em uma caixa separada.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="profile-action-button"
+                        id="open-password-modal"
+                    >
+                        ALTERAR SENHA
+                    </button>
+
+                    <p
+                        id="password-message"
+                        class="reader-profile-message"
+                    ></p>
+
+                </section>
+
+                <!-- =========================================
+                     PROGRESSO DE LEITURA
+                ========================================== -->
+
+                <section class="reader-profile-card">
+
+                    <div class="reader-profile-card-header">
+
+                        <span>LEITURA</span>
+
+                        <h2>PROGRESSO</h2>
+
+                        <p>
+                            Continue de onde parou.
+                        </p>
+
+                    </div>
+
+                    <div class="reader-profile-progress-list">
+
+                        <div class="reader-profile-progress-item">
+
+                            <small>Último capítulo lido</small>
+
+                            <strong id="profile-chapter">
+                                Carregando...
+                            </strong>
+
+                        </div>
+
+                        <div class="reader-profile-progress-item">
+
+                            <small>Última página lida</small>
+
+                            <strong id="profile-page">
+                                Carregando...
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                    <div class="reader-profile-actions">
+
+                        <a
+                            id="continue-reading-button"
+                            href="chapters.html"
+                            class="profile-action-button"
+                        >
+                            CONTINUAR LEITURA
+                        </a>
+
+                        <a
+                            href="chapters.html"
+                            class="profile-action-button profile-action-button-secondary"
+                        >
+                            VER CAPÍTULOS
+                        </a>
+
+                    </div>
+
+                    <p
+                        id="profile-progress-message"
+                        class="reader-profile-message"
+                    ></p>
+
+                </section>
+
+                <!-- =========================================
+                     SAIR DA CONTA
+                ========================================== -->
+
+                <section class="reader-profile-card">
+
+                    <div class="reader-profile-card-header">
+
+                        <span>SESSÃO</span>
+
+                        <h2>CONTA</h2>
+
+                        <p>
+                            Encerrar sessão neste navegador.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="profile-action-button profile-action-button-danger"
+                        id="logout-button"
+                    >
+                        SAIR DA CONTA
+                    </button>
+
+                </section>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- =========================================
+         MODAL EDITAR CAMPO
+    ========================================== -->
+
+    <div
+        class="profile-modal"
+        id="field-modal"
+        hidden
+    >
+
+        <div
+            class="profile-modal-overlay"
+            data-close-modal
+        ></div>
+
+        <div
+            class="profile-modal-box"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="field-modal-title"
+        >
+
+            <div class="profile-modal-header">
+
+                <div>
+
+                    <span>EDITAR DADO</span>
+
+                    <h2 id="field-modal-title">
+                        Editar campo
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="profile-modal-close"
+                    data-close-modal
+                    aria-label="Fechar"
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <form
+                id="field-form"
+                class="profile-modal-form"
+            >
+
+                <label
+                    id="field-input-label"
+                    for="field-input"
+                >
+                    Campo
+                </label>
+
+                <input
+                    type="text"
+                    id="field-input"
+                    autocomplete="off"
+                >
+
+                <div class="profile-modal-actions">
+
+                    <button
+                        type="submit"
+                        class="profile-action-button"
+                    >
+                        SALVAR
+                    </button>
+
+                    <button
+                        type="button"
+                        class="profile-action-button profile-action-button-secondary"
+                        data-close-modal
+                    >
+                        CANCELAR
+                    </button>
+
+                </div>
+
+                <p
+                    id="field-modal-message"
+                    class="reader-profile-message"
+                ></p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- =========================================
+         MODAL ALTERAR SENHA
+    ========================================== -->
+
+    <div
+        class="profile-modal"
+        id="password-modal"
+        hidden
+    >
+
+        <div
+            class="profile-modal-overlay"
+            data-close-modal
+        ></div>
+
+        <div
+            class="profile-modal-box"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="password-modal-title"
+        >
+
+            <div class="profile-modal-header">
+
+                <div>
+
+                    <span>SEGURANÇA</span>
+
+                    <h2 id="password-modal-title">
+                        Alterar senha
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="profile-modal-close"
+                    data-close-modal
+                    aria-label="Fechar"
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <form
+                id="password-form"
+                class="profile-modal-form"
+            >
+
+                <label for="current-password">
+                    Senha atual
+                </label>
+
+                <input
+                    type="password"
+                    id="current-password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <label for="new-password">
+                    Nova senha
+                </label>
+
+                <input
+                    type="password"
+                    id="new-password"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <label for="confirm-password">
+                    Confirmar nova senha
+                </label>
+
+                <input
+                    type="password"
+                    id="confirm-password"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <div class="profile-modal-actions">
+
+                    <button
+                        type="submit"
+                        class="profile-action-button"
+                    >
+                        ALTERAR SENHA
+                    </button>
+
+                    <button
+                        type="button"
+                        class="profile-action-button profile-action-button-secondary"
+                        data-close-modal
+                    >
+                        CANCELAR
+                    </button>
+
+                </div>
+
+                <p
+                    id="password-modal-message"
+                    class="reader-profile-message"
+                ></p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- =========================================
+         MODAL AVATARES
+    ========================================== -->
+
+    <div
+        class="profile-modal"
+        id="avatar-modal"
+        hidden
+    >
+
+        <div
+            class="profile-modal-overlay"
+            data-close-modal
+        ></div>
+
+        <div
+            class="profile-modal-box profile-modal-box-large"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="avatar-modal-title"
+        >
+
+            <div class="profile-modal-header">
+
+                <div>
+
+                    <span>AVATAR DO LEITOR</span>
+
+                    <h2 id="avatar-modal-title">
+                        Editar avatar
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="profile-modal-close"
+                    data-close-modal
+                    aria-label="Fechar"
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <div
+                id="user-avatar-list"
+                class="profile-avatar-list"
+            >
+                Carregando avatares...
+            </div>
+
+            <p
+                id="avatar-message"
+                class="reader-profile-message"
+            ></p>
+
+        </div>
+
+    </div>
+
+    <!-- =========================================
+         JAVASCRIPT DO PERFIL
+    ========================================== -->
+
+    <script>
+
+        const API_URL = "http://127.0.0.1:8000";
+
+        const DEFAULT_AVATAR_URL = "assets/avatars/default-avatar.png";
+
+        const profileState = {
+            user: null,
+            avatars: [],
+            selectedAvatarId: null,
+            editingField: null
+        };
+
+        const editableFields = {
+            nome: {
+                label: "Nome",
+                type: "text",
+                required: true
+            },
+            apelido: {
+                label: "Apelido",
+                type: "text",
+                required: true
+            },
+            email: {
+                label: "Email",
+                type: "email",
+                required: true
+            },
+            telefone: {
+                label: "Telefone",
+                type: "text",
+                required: false
+            }
+        };
+
+        function escapeHTML(value) {
+
+            if (value === null || value === undefined) {
+                return "";
+            }
+
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+
+        }
+
+        function getLoggedUserFromStorage() {
+
+            const storedUser = localStorage.getItem("hiruiUser");
+
+            if (!storedUser) {
+                return null;
+            }
+
+            try {
+
+                const parsedUser = JSON.parse(storedUser);
+
+                if (parsedUser && parsedUser.id && parsedUser.email) {
+                    return parsedUser;
+                }
+
+                if (
+                    parsedUser &&
+                    parsedUser.user &&
+                    parsedUser.user.id &&
+                    parsedUser.user.email
+                ) {
+                    return parsedUser.user;
+                }
+
+            } catch (error) {
+
+                localStorage.removeItem("hiruiUser");
+
+            }
+
+            return null;
+
+        }
+
+        function saveUserToStorage(user) {
+
+            if (!user || !user.id) {
+                return;
+            }
+
+            localStorage.setItem("hiruiUser", JSON.stringify(user));
+
+        }
+
+        function normalizeAvatarUrl(avatarUrl) {
+
+            if (!avatarUrl || avatarUrl === "string") {
+                return DEFAULT_AVATAR_URL;
+            }
+
+            if (
+                avatarUrl.startsWith("http://") ||
+                avatarUrl.startsWith("https://")
+            ) {
+                return avatarUrl;
+            }
+
+            if (avatarUrl.startsWith("/manga")) {
+                return `${API_URL}${avatarUrl}`;
+            }
+
+            return avatarUrl;
+
+        }
+
+        function isInvalidAvatarData(avatar) {
+
+            if (!avatar) {
+                return true;
+            }
+
+            const name = String(avatar.name || "").trim().toLowerCase();
+
+            const description = String(avatar.description || "").trim().toLowerCase();
+
+            const imageUrl = String(avatar.image_url || "").trim().toLowerCase();
+
+            return (
+                name === "string" ||
+                description === "string" ||
+                imageUrl === "string"
+            );
+
+        }
+
+        function getValidAvatars() {
+
+            return profileState.avatars.filter((avatar) => {
+                return !isInvalidAvatarData(avatar);
+            });
+
+        }
+
+        function getUnlockedAvatars() {
+
+            return getValidAvatars().filter((avatar) => {
+                return avatar.is_unlocked === true;
+            });
+
+        }
+
+        function getSelectedAvatar() {
+
+            const validAvatars = getValidAvatars();
+
+            const selectedByBackend = validAvatars.find((avatar) => {
+                return avatar.is_selected === true;
+            });
+
+            if (selectedByBackend) {
+                return selectedByBackend;
+            }
+
+            return validAvatars.find((avatar) => {
+                return Number(avatar.id) === Number(profileState.selectedAvatarId);
+            });
+
+        }
+
+        function setText(elementId, value, fallback = "Não informado") {
+
+            const element = document.getElementById(elementId);
+
+            if (!element) {
+                return;
+            }
+
+            element.textContent = value || fallback;
+
+        }
+
+        function renderUserData() {
+
+            const user = profileState.user;
+
+            if (!user) {
+                return;
+            }
+
+            profileState.selectedAvatarId =
+                user.avatar_id || profileState.selectedAvatarId;
+
+            setText("profile-display-name", user.apelido || user.nome);
+            setText("profile-display-email", user.email);
+
+            setText("profile-name", user.nome);
+            setText("profile-nickname", user.apelido);
+            setText("profile-email", user.email);
+            setText("profile-phone", user.telefone);
+
+            const statusElement = document.getElementById("profile-status");
+
+            if (statusElement) {
+
+                if (user.is_blocked) {
+
+                    statusElement.textContent = "Bloqueada";
+                    statusElement.className = "profile-status-blocked";
+
+                } else {
+
+                    statusElement.textContent = "Ativa";
+                    statusElement.className = "profile-status-active";
+
+                }
+
+            }
+
+            renderCurrentAvatar();
+
+        }
+
+        function renderCurrentAvatar() {
+
+            const avatarImage = document.getElementById("profile-avatar-image");
+
+            const avatarTitle = document.getElementById("profile-avatar-title");
+
+            const avatarDescription = document.getElementById("profile-avatar-description");
+
+            const selectedAvatar = getSelectedAvatar();
+
+            if (selectedAvatar) {
+
+                avatarImage.src = normalizeAvatarUrl(selectedAvatar.image_url);
+
+                avatarTitle.textContent =
+                    selectedAvatar.name || "Avatar Padrão";
+
+                avatarDescription.textContent =
+                    selectedAvatar.description || "Avatar selecionado para o seu perfil.";
+
+                return;
+
+            }
+
+            const fallbackAvatarUrl =
+                profileState.user && profileState.user.avatar_url
+                    ? profileState.user.avatar_url
+                    : DEFAULT_AVATAR_URL;
+
+            avatarImage.src = normalizeAvatarUrl(fallbackAvatarUrl);
+
+            avatarTitle.textContent = "Avatar Padrão";
+
+            avatarDescription.textContent =
+                "Avatar inicial concedido a todos os leitores.";
+
+        }
+
+        function protectProfilePage() {
+
+            const user = getLoggedUserFromStorage();
+
+            if (!user || !user.id) {
+
+                alert("Você precisa fazer login para acessar o perfil.");
+
+                window.location.href = "login.html";
+
+                return null;
+
+            }
+
+            profileState.user = user;
+
+            return user;
+
+        }
+
+        function openModal(modalId) {
+
+            const modal = document.getElementById(modalId);
+
+            if (!modal) {
+                return;
+            }
+
+            modal.hidden = false;
+
+            modal.classList.add("active");
+
+            document.body.classList.add("modal-open");
+
+        }
+
+        function closeModal(modal) {
+
+            if (!modal) {
+                return;
+            }
+
+            modal.classList.remove("active");
+
+            modal.hidden = true;
+
+            const activeModal = document.querySelector(".profile-modal.active");
+
+            if (!activeModal) {
+                document.body.classList.remove("modal-open");
+            }
+
+        }
+
+        function closeAllModals() {
+
+            document.querySelectorAll(".profile-modal").forEach((modal) => {
+
+                modal.classList.remove("active");
+
+                modal.hidden = true;
+
+            });
+
+            document.body.classList.remove("modal-open");
+
+        }
+
+        async function loadUserProfile(userId) {
+
+            try {
+
+                const response = await fetch(`${API_URL}/users/${userId}/profile`);
+
+                const data = await response.json();
+
+                if (!data.success || !data.user) {
+                    renderUserData();
+                    return;
+                }
+
+                profileState.user = {
+                    ...profileState.user,
+                    ...data.user
+                };
+
+                saveUserToStorage(profileState.user);
+
+                renderUserData();
+
+            } catch (error) {
+
+                renderUserData();
+
+            }
+
+        }
+
+        async function loadReadingProgress(userId) {
+
+            const chapterElement = document.getElementById("profile-chapter");
+
+            const pageElement = document.getElementById("profile-page");
+
+            const messageElement = document.getElementById("profile-progress-message");
+
+            const continueButton = document.getElementById("continue-reading-button");
+
+            try {
+
+                const response = await fetch(`${API_URL}/reading-progress/${userId}`);
+
+                const data = await response.json();
+
+                if (!data.success || !data.progress) {
+
+                    chapterElement.textContent = "Nenhum progresso salvo";
+
+                    pageElement.textContent = "Nenhuma página salva";
+
+                    continueButton.href = "chapters.html";
+
+                    messageElement.textContent =
+                        "Você ainda não começou a leitura ou seu progresso ainda não foi salvo.";
+
+                    return;
+
+                }
+
+                const progress = data.progress;
+
+                chapterElement.textContent = `Capítulo ${progress.chapter}`;
+
+                pageElement.textContent = `Página ${progress.page}`;
+
+                continueButton.href =
+                    `reader.html#cap=${progress.chapter}&page=${progress.page}`;
+
+                messageElement.textContent =
+                    "Seu progresso foi carregado. Continue de onde parou.";
+
+            } catch (error) {
+
+                chapterElement.textContent = "Erro ao carregar";
+
+                pageElement.textContent = "Erro ao carregar";
+
+                continueButton.href = "chapters.html";
+
+                messageElement.textContent =
+                    "Não foi possível conectar com o backend para carregar seu progresso.";
+
+            }
+
+        }
+
+        async function loadUserAvatars(userId) {
+
+            try {
+
+                const response = await fetch(`${API_URL}/users/${userId}/avatars`);
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    profileState.avatars = [];
+                    renderCurrentAvatar();
+                    return;
+                }
+
+                profileState.avatars = data.avatars || [];
+
+                const selectedAvatar = getSelectedAvatar();
+
+                if (selectedAvatar) {
+                    profileState.selectedAvatarId = selectedAvatar.id;
+                }
+
+                renderCurrentAvatar();
+
+            } catch (error) {
+
+                profileState.avatars = [];
+
+                renderCurrentAvatar();
+
+            }
+
+        }
+
+        function openFieldEditModal(fieldName) {
+
+            const fieldConfig = editableFields[fieldName];
+
+            if (!fieldConfig || !profileState.user) {
+                return;
+            }
+
+            profileState.editingField = fieldName;
+
+            const modalTitle = document.getElementById("field-modal-title");
+
+            const inputLabel = document.getElementById("field-input-label");
+
+            const input = document.getElementById("field-input");
+
+            const message = document.getElementById("field-modal-message");
+
+            modalTitle.textContent = `Editar ${fieldConfig.label}`;
+
+            inputLabel.textContent = fieldConfig.label;
+
+            input.type = fieldConfig.type;
+
+            input.required = fieldConfig.required;
+
+            input.value = profileState.user[fieldName] || "";
+
+            message.textContent = "";
+
+            openModal("field-modal");
+
+            setTimeout(() => {
+                input.focus();
+            }, 80);
+
+        }
+
+        async function updateUserField(event) {
+
+            event.preventDefault();
+
+            const message = document.getElementById("field-modal-message");
+
+            const fieldName = profileState.editingField;
+
+            const fieldConfig = editableFields[fieldName];
+
+            const input = document.getElementById("field-input");
+
+            if (!profileState.user || !profileState.user.id || !fieldConfig) {
+
+                message.textContent = "Usuário ou campo não encontrado.";
+
+                return;
+
+            }
+
+            const newValue = input.value.trim();
+
+            if (fieldConfig.required && !newValue) {
+
+                message.textContent = `${fieldConfig.label} não pode ficar vazio.`;
+
+                return;
+
+            }
+
+            const payload = {
+                nome: profileState.user.nome || "",
+                apelido: profileState.user.apelido || "",
+                email: profileState.user.email || "",
+                telefone: profileState.user.telefone || ""
+            };
+
+            payload[fieldName] = newValue;
+
+            if (!payload.nome || !payload.apelido || !payload.email) {
+
+                message.textContent =
+                    "Nome, apelido e email são obrigatórios.";
+
+                return;
+
+            }
+
+            message.textContent = "Salvando alteração...";
+
+            try {
+
+                const response = await fetch(`${API_URL}/users/${profileState.user.id}/profile`, {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(payload)
+
+                });
+
+                const data = await response.json();
+
+                message.textContent =
+                    data.message || "Operação concluída.";
+
+                if (!data.success) {
+                    return;
+                }
+
+                profileState.user = {
+                    ...profileState.user,
+                    ...(data.user || payload)
+                };
+
+                saveUserToStorage(profileState.user);
+
+                renderUserData();
+
+                document.getElementById("profile-edit-message").textContent =
+                    data.message || "Dados atualizados com sucesso.";
+
+                setTimeout(() => {
+                    closeModal(document.getElementById("field-modal"));
+                }, 500);
+
+            } catch (error) {
+
+                message.textContent =
+                    "Não foi possível conectar com o backend para atualizar seus dados.";
+
+            }
+
+        }
+
+        async function updateUserPassword(event) {
+
+            event.preventDefault();
+
+            const message = document.getElementById("password-modal-message");
+
+            const outsideMessage = document.getElementById("password-message");
+
+            if (!profileState.user || !profileState.user.id) {
+
+                message.textContent = "Usuário não encontrado.";
+
+                return;
+
+            }
+
+            const currentPassword =
+                document.getElementById("current-password").value;
+
+            const newPassword =
+                document.getElementById("new-password").value;
+
+            const confirmPassword =
+                document.getElementById("confirm-password").value;
+
+            if (newPassword.length < 6) {
+
+                message.textContent =
+                    "A nova senha precisa ter pelo menos 6 caracteres.";
+
+                return;
+
+            }
+
+            if (newPassword !== confirmPassword) {
+
+                message.textContent =
+                    "A nova senha e a confirmação não coincidem.";
+
+                return;
+
+            }
+
+            const payload = {
+                senha_atual: currentPassword,
+                nova_senha: newPassword,
+                confirmar_senha: confirmPassword
+            };
+
+            message.textContent = "Alterando senha...";
+
+            try {
+
+                const response = await fetch(`${API_URL}/users/${profileState.user.id}/password`, {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(payload)
+
+                });
+
+                const data = await response.json();
+
+                message.textContent =
+                    data.message || "Operação concluída.";
+
+                if (!data.success) {
+                    return;
+                }
+
+                document.getElementById("password-form").reset();
+
+                outsideMessage.textContent =
+                    data.message || "Senha alterada com sucesso.";
+
+                setTimeout(() => {
+                    closeModal(document.getElementById("password-modal"));
+                }, 500);
+
+            } catch (error) {
+
+                message.textContent =
+                    "Não foi possível conectar com o backend para alterar a senha.";
+
+            }
+
+        }
+
+        function renderAvatarOptions() {
+
+            const avatarList = document.getElementById("user-avatar-list");
+
+            const message = document.getElementById("avatar-message");
+
+            const unlockedAvatars = getUnlockedAvatars();
+
+            avatarList.innerHTML = "";
+
+            message.textContent = "";
+
+            if (!unlockedAvatars.length) {
+
+                avatarList.innerHTML = `
+                    <div class="profile-empty-box">
+                        Nenhum avatar desbloqueado foi encontrado.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+            unlockedAvatars.forEach((avatar) => {
+
+                const isSelected =
+                    avatar.is_selected === true ||
+                    Number(avatar.id) === Number(profileState.selectedAvatarId);
+
+                const item = document.createElement("article");
+
+                item.className = isSelected
+                    ? "profile-avatar-option selected"
+                    : "profile-avatar-option";
+
+                const avatarActionHTML = isSelected
+    ? `
+        <span class="profile-avatar-current-badge">
+            AVATAR ATUAL
+        </span>
+    `
+    : `
+        <button
+            type="button"
+            class="profile-action-button avatar-select-button"
+        >
+            DEFINIR AVATAR
+        </button>
+    `;
+
+item.innerHTML = `
+    <div class="profile-avatar-option-image">
+
+        <img
+            src="${escapeHTML(normalizeAvatarUrl(avatar.image_url))}"
+            alt="${escapeHTML(avatar.name || "Avatar")}"
+        >
+
+    </div>
+
+    <div class="profile-avatar-option-content">
+
+        <h3>${escapeHTML(avatar.name || "Avatar")}</h3>
+
+        <p>${escapeHTML(avatar.description || "Avatar desbloqueado.")}</p>
+
+        <small>${escapeHTML(avatar.rarity || "Comum")}</small>
+
+    </div>
+
+    ${avatarActionHTML}
+`;
+
+                const avatarImage = item.querySelector("img");
+
+                avatarImage.addEventListener("error", function () {
+                    this.src = DEFAULT_AVATAR_URL;
+                });
+
+                const selectButton = item.querySelector(".avatar-select-button");
+
+                if (selectButton && !isSelected) {
+
+                    selectButton.addEventListener("click", () => {
+                        selectUserAvatar(avatar.id, avatar);
+                    });
+
+                }
+
+                avatarList.appendChild(item);
+
+            });
+
+        }
+
+        async function openAvatarModal() {
+
+            openModal("avatar-modal");
+
+            renderAvatarOptions();
+
+            if (!profileState.avatars.length && profileState.user) {
+
+                document.getElementById("user-avatar-list").innerHTML =
+                    "Carregando avatares...";
+
+                await loadUserAvatars(profileState.user.id);
+
+                renderAvatarOptions();
+
+            }
+
+        }
+
+        async function selectUserAvatar(avatarId, avatar) {
+
+            const message = document.getElementById("avatar-message");
+
+            if (!profileState.user || !profileState.user.id) {
+
+                message.textContent = "Usuário não encontrado.";
+
+                return;
+
+            }
+
+            message.textContent = "Atualizando avatar...";
+
+            try {
+
+                const response = await fetch(`${API_URL}/users/${profileState.user.id}/avatar`, {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        avatar_id: avatarId
+                    })
+
+                });
+
+                const data = await response.json();
+
+                message.textContent =
+                    data.message || "Operação concluída.";
+
+                if (!data.success) {
+                    return;
+                }
+
+                profileState.selectedAvatarId = avatarId;
+
+                profileState.user = {
+                    ...profileState.user,
+                    ...(data.user || {
+                        avatar_id: avatarId,
+                        avatar_url: avatar.image_url
+                    })
+                };
+
+                profileState.avatars = profileState.avatars.map((item) => {
+                    return {
+                        ...item,
+                        is_selected: Number(item.id) === Number(avatarId)
+                    };
+                });
+
+                saveUserToStorage(profileState.user);
+
+                renderUserData();
+
+                renderAvatarOptions();
+
+            } catch (error) {
+
+                message.textContent =
+                    "Não foi possível conectar com o backend para atualizar o avatar.";
+
+            }
+
+        }
+
+        function logoutUser() {
+
+            const confirmed = confirm("Deseja sair da conta?");
+
+            if (!confirmed) {
+                return;
+            }
+
+            localStorage.removeItem("hiruiUser");
+
+            window.location.href = "index.html";
+
+        }
+
+        function setupProfileEvents() {
+
+            document.querySelectorAll("[data-edit-field]").forEach((button) => {
+
+                button.addEventListener("click", function () {
+
+                    const fieldName = this.getAttribute("data-edit-field");
+
+                    openFieldEditModal(fieldName);
+
+                });
+
+            });
+
+            document.querySelectorAll("[data-close-modal]").forEach((element) => {
+
+                element.addEventListener("click", function () {
+
+                    const modal = this.closest(".profile-modal");
+
+                    closeModal(modal);
+
+                });
+
+            });
+
+            document.addEventListener("keydown", function (event) {
+
+                if (event.key === "Escape") {
+                    closeAllModals();
+                }
+
+            });
+
+            document
+                .getElementById("field-form")
+                .addEventListener("submit", updateUserField);
+
+            document
+                .getElementById("password-form")
+                .addEventListener("submit", updateUserPassword);
+
+            document
+                .getElementById("open-password-modal")
+                .addEventListener("click", function () {
+
+                    document.getElementById("password-modal-message").textContent = "";
+
+                    document.getElementById("password-form").reset();
+
+                    openModal("password-modal");
+
+                });
+
+            document
+                .getElementById("open-avatar-modal")
+                .addEventListener("click", openAvatarModal);
+
+            document
+                .getElementById("logout-button")
+                .addEventListener("click", logoutUser);
+
+            const profileAvatarImage =
+                document.getElementById("profile-avatar-image");
+
+            profileAvatarImage.addEventListener("error", function () {
+                this.src = DEFAULT_AVATAR_URL;
+            });
+
+        }
+
+        document.addEventListener("DOMContentLoaded", async function () {
+
+            const user = protectProfilePage();
+
+            if (!user) {
+                return;
+            }
+
+            setupProfileEvents();
+
+            renderUserData();
+
+            await loadUserProfile(user.id);
+
+            await loadUserAvatars(user.id);
+
+            loadReadingProgress(user.id);
+
+        });
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Leitor | Hirui Naki Chisuji</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body class="reader-body protected-page">
+
+    <!-- =========================================
+         BARRA SUPERIOR DO LEITOR
+    ========================================== -->
+
+    <header class="reader-topbar">
+
+        <a href="index.html" class="reader-icon-button" title="Home">
+            ⌂
+        </a>
+
+        <button onclick="prevPage()" class="reader-page-button" title="Página anterior">
+            &lt;
+        </button>
+
+        <button onclick="nextPage()" class="reader-page-button" title="Próxima página">
+            &gt;
+        </button>
+
+        <a href="chapters.html" class="reader-icon-button" title="Capítulos">
+            ☰
+        </a>
+
+    </header>
+
+    <!-- =========================================
+         LEITOR
+    ========================================== -->
+
+    <main class="reader-container">
+
+        <img id="manga-image" alt="Página do mangá">
+
+        <!-- =========================================
+             CAPÍTULO CONCLUÍDO
+        ========================================== -->
+
+        <section id="chapter-finished" class="chapter-finished">
+
+            <span>CAPÍTULO CONCLUÍDO</span>
+
+            <h1>Você chegou ao fim deste capítulo.</h1>
+
+            <p>
+                O próximo capítulo foi desbloqueado, caso já esteja disponível.
+            </p>
+
+            <div class="chapter-finished-buttons">
+
+                <button id="next-chapter-btn">
+                    PRÓXIMO CAPÍTULO
+                </button>
+
+                <button onclick="window.location.href='chapters.html'">
+                    VOLTAR AOS CAPÍTULOS
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- =========================================
+             FRAGMENTO OCULTO
+        ========================================== -->
+
+       <div id="hidden-fragment" class="hidden-fragment">
+
+    <a href="#" id="hidden-fragment-link" title="Fragmento Oculto">
+
+        <span class="fragment-icon">✦</span>
+
+        <span class="fragment-text">
+            Fragmento Oculto
+        </span>
+
+    </a>
+
+</div>
+
+        <div class="reader-buttons">
+
+            <button onclick="prevPage()">⬅ Página anterior</button>
+
+            <button onclick="nextPage()">Próxima página ➜</button>
+
+        </div>
+
+    </main>
+
+    <script src="script.js?v=22"></script>
+
+</body>
+
+</html>

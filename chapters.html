@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Capítulos | Hirui Naki Chisuji</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body class="protected-page">
+
+    <!-- =========================================
+         NAVBAR
+    ========================================== -->
+
+    <header class="navbar">
+
+        <img src="assets/logo.png" class="logo" alt="Logo Hirui Naki Chisuji">
+
+        <nav id="nav-menu">
+
+            <a href="index.html">HOME</a>
+            <a href="login.html">LOGIN</a>
+
+        </nav>
+
+    </header>
+
+    <!-- =========================================
+         CAPÍTULOS
+    ========================================== -->
+
+    <section class="chapters-page">
+
+        <div class="section-title">
+
+            <h2>CAPÍTULOS</h2>
+
+        </div>
+
+        <div id="chapters-message" style="color:#999; font-size:18px; margin-bottom:30px;">
+            Carregando capítulos...
+        </div>
+
+        <div id="chapters-grid" class="chapters-grid"></div>
+
+    </section>
+
+    <!-- =========================================
+         JAVASCRIPT / CAPÍTULOS DINÂMICOS
+    ========================================== -->
+
+    <script>
+
+        (function () {
+
+            const HIRUI_API_URL = "http://127.0.0.1:8000";
+
+            const ADMIN_EMAIL = "raionorio0204@admin.com";
+
+            const chaptersGrid = document.getElementById("chapters-grid");
+
+            const chaptersMessage = document.getElementById("chapters-message");
+
+            function getLoggedUserFromStorage() {
+
+                for (let index = 0; index < localStorage.length; index++) {
+
+                    const key = localStorage.key(index);
+
+                    const value = localStorage.getItem(key);
+
+                    if (!value) {
+
+                        continue;
+
+                    }
+
+                    try {
+
+                        const parsedValue = JSON.parse(value);
+
+                        if (parsedValue && typeof parsedValue === "object") {
+
+                            if (parsedValue.email && parsedValue.id) {
+
+                                return parsedValue;
+
+                            }
+
+                            if (parsedValue.user && parsedValue.user.email) {
+
+                                return parsedValue.user;
+
+                            }
+
+                        }
+
+                    } catch (error) {
+
+                        continue;
+
+                    }
+
+                }
+
+                return null;
+
+            }
+
+            function isAdminUser(user) {
+
+                if (!user || !user.email) {
+
+                    return false;
+
+                }
+
+                return user.email.trim().toLowerCase() === ADMIN_EMAIL;
+
+            }
+
+            async function getUserUnlocks(user) {
+
+                if (!user || !user.id) {
+
+                    return [];
+
+                }
+
+                try {
+
+                    const response = await fetch(`${HIRUI_API_URL}/unlocks/${user.id}`);
+
+                    const data = await response.json();
+
+                    if (!data.success || !Array.isArray(data.unlocks)) {
+
+                        return [];
+
+                    }
+
+                    return data.unlocks.map((unlock) => unlock.unlock_key);
+
+                } catch (error) {
+
+                    return [];
+
+                }
+
+            }
+
+            function getChapterCover(chapter) {
+
+                if (chapter.cover_image && chapter.cover_image.trim() !== "") {
+
+                    return chapter.cover_image;
+
+                }
+
+                return `assets/capitulos/capitulo${chapter.number}.png`;
+
+            }
+
+            function getChapterDate(chapter, isUnlocked) {
+
+                if (!isUnlocked) {
+
+                    return "Continue lendo para desbloquear.";
+
+                }
+
+                if (chapter.release_date && chapter.release_date.trim() !== "") {
+
+                    return chapter.release_date;
+
+                }
+
+                return "Disponível agora.";
+
+            }
+
+            function createChapterCard(chapter, unlocked) {
+
+                const cardWrapper = document.createElement("div");
+
+                cardWrapper.className = unlocked
+                    ? "chapter-card-link"
+                    : "chapter-card-link locked-chapter";
+
+                cardWrapper.dataset.chapter = chapter.number;
+
+                const card = document.createElement("div");
+
+                card.className = unlocked
+                    ? "chapter-card"
+                    : "chapter-card locked";
+
+                if (!unlocked) {
+
+                    const lockBadge = document.createElement("div");
+
+                    lockBadge.className = "lock-badge";
+
+                    lockBadge.textContent = "🔒 BLOQUEADO";
+
+                    card.appendChild(lockBadge);
+
+                }
+
+                const image = document.createElement("img");
+
+                image.src = getChapterCover(chapter);
+
+                image.alt = `Capítulo ${chapter.number}`;
+
+                const info = document.createElement("div");
+
+                info.className = "chapter-info";
+
+                const chapterLabel = document.createElement("span");
+
+                chapterLabel.textContent = `CAPÍTULO ${chapter.number}`;
+
+                const title = document.createElement("h3");
+
+                title.textContent = chapter.title;
+
+                const date = document.createElement("p");
+
+                date.textContent = getChapterDate(chapter, unlocked);
+
+                info.appendChild(chapterLabel);
+
+                info.appendChild(title);
+
+                info.appendChild(date);
+
+                card.appendChild(image);
+
+                card.appendChild(info);
+
+                cardWrapper.appendChild(card);
+
+                cardWrapper.addEventListener("click", function () {
+
+                    if (!unlocked) {
+
+                        alert("Este capítulo ainda está bloqueado.");
+
+                        return;
+
+                    }
+
+                    window.location.href = `reader.html#cap=${chapter.number}`;
+
+                });
+
+                return cardWrapper;
+
+            }
+
+            async function loadDynamicChapters() {
+
+                const user = getLoggedUserFromStorage();
+
+                const userIsAdmin = isAdminUser(user);
+
+                try {
+
+                    const response = await fetch(`${HIRUI_API_URL}/admin/chapters`);
+
+                    const data = await response.json();
+
+                    if (!data.success || !Array.isArray(data.chapters)) {
+
+                        chaptersMessage.textContent = "Não foi possível carregar os capítulos.";
+
+                        return;
+
+                    }
+
+                    const publishedChapters = data.chapters
+    .filter((chapter) => {
+
+        if (!chapter.is_published) {
+
+            return false;
+
+        }
+
+        if (Number(chapter.number) === 0) {
+
+            return false;
+
+        }
+
+        return true;
+
+    })
+    .sort((a, b) => a.number - b.number);
+
+                    if (publishedChapters.length === 0) {
+
+                        chaptersMessage.textContent = "Nenhum capítulo publicado ainda.";
+
+                        return;
+
+                    }
+
+                    const unlockedKeys = userIsAdmin
+                        ? publishedChapters.map((chapter) => `cap${chapter.number}`)
+                        : await getUserUnlocks(user);
+
+                    chaptersGrid.innerHTML = "";
+
+                    publishedChapters.forEach((chapter) => {
+
+                        const chapterKey = `cap${chapter.number}`;
+
+                        const unlocked = userIsAdmin || unlockedKeys.includes(chapterKey);
+
+                        const card = createChapterCard(chapter, unlocked);
+
+                        chaptersGrid.appendChild(card);
+
+                    });
+
+                    chaptersMessage.textContent = "";
+
+                } catch (error) {
+
+                    chaptersMessage.textContent = "Erro ao conectar com o backend.";
+
+                }
+
+            }
+
+            document.addEventListener("DOMContentLoaded", loadDynamicChapters);
+
+        })();
+
+    </script>
+
+    <script src="script.js?v=10"></script>
+    <script src="admin-access.js"></script>
+
+</body>
+
+</html>
