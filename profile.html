@@ -89,6 +89,18 @@
                                 Avatar inicial concedido a todos os leitores.
                             </p>
 
+                            <div class="reader-profile-current-outfit">
+
+                                <span>
+                                    TRAJE ATUAL
+                                </span>
+
+                                <strong id="profile-current-outfit">
+                                    Nenhum traje equipado
+                                </strong>
+
+                            </div>
+
                             <button
                                 type="button"
                                 class="profile-action-button"
@@ -601,19 +613,62 @@
 
             </div>
 
-            <div
-                id="user-avatar-list"
-                class="profile-avatar-list"
-            >
-                Carregando avatares...
-            </div>
+            <div class="profile-modal-section">
 
-            <p
-                id="avatar-message"
-                class="reader-profile-message"
-            ></p>
+    <div class="profile-modal-section-title">
 
-        </div>
+        <span>AVATARES DESBLOQUEADOS</span>
+
+        <h3>
+            Escolha seu avatar
+        </h3>
+
+        <p>
+            Avatares oficiais desbloqueados pela leitura ou por recompensas.
+        </p>
+
+    </div>
+
+    <div
+        id="user-avatar-list"
+        class="profile-avatar-list"
+    >
+        Carregando avatares...
+    </div>
+
+</div>
+
+<div class="profile-modal-section">
+
+    <div class="profile-modal-section-title">
+
+        <span>TRAJES DESBLOQUEADOS</span>
+
+        <h3>
+            Escolha seu traje
+        </h3>
+
+        <p>
+            Trajes são liberados conforme seu avanço nos capítulos.
+        </p>
+
+    </div>
+
+    <div
+        id="user-outfit-list"
+        class="profile-outfit-list"
+    >
+        Carregando trajes...
+    </div>
+
+</div>
+
+<p
+    id="avatar-message"
+    class="reader-profile-message"
+></p>
+
+    </div>
 
     </div>
 
@@ -621,7 +676,7 @@
          JAVASCRIPT DO PERFIL
     ========================================== -->
 
-    <script>
+        <script>
 
         const API_URL = "http://127.0.0.1:8000";
 
@@ -630,7 +685,9 @@
         const profileState = {
             user: null,
             avatars: [],
+            outfits: [],
             selectedAvatarId: null,
+            selectedOutfitId: null,
             editingField: null
         };
 
@@ -738,6 +795,27 @@
 
         }
 
+        function normalizeOutfitImageUrl(outfitUrl) {
+
+            if (!outfitUrl || outfitUrl === "string") {
+                return "";
+            }
+
+            if (
+                outfitUrl.startsWith("http://") ||
+                outfitUrl.startsWith("https://")
+            ) {
+                return outfitUrl;
+            }
+
+            if (outfitUrl.startsWith("/manga")) {
+                return `${API_URL}${outfitUrl}`;
+            }
+
+            return outfitUrl;
+
+        }
+
         function isInvalidAvatarData(avatar) {
 
             if (!avatar) {
@@ -774,6 +852,47 @@
 
         }
 
+        function getValidOutfits() {
+
+            return profileState.outfits.filter((outfit) => {
+                return outfit && outfit.id && outfit.name;
+            });
+
+        }
+
+        function getEquippedOutfit() {
+
+            return getValidOutfits().find((outfit) => {
+                return outfit.is_equipped === true;
+            });
+
+        }
+
+        function renderCurrentOutfit() {
+
+            const currentOutfitElement =
+                document.getElementById("profile-current-outfit");
+
+            if (!currentOutfitElement) {
+                return;
+            }
+
+            const equippedOutfit = getEquippedOutfit();
+
+            if (!equippedOutfit) {
+
+                currentOutfitElement.textContent =
+                    "Nenhum traje equipado";
+
+                return;
+
+            }
+
+            currentOutfitElement.textContent =
+                equippedOutfit.name || "Traje equipado";
+
+        }
+
         function getSelectedAvatar() {
 
             const validAvatars = getValidAvatars();
@@ -801,6 +920,44 @@
             }
 
             element.textContent = value || fallback;
+
+        }
+
+        function renderCurrentAvatar() {
+
+            const avatarImage = document.getElementById("profile-avatar-image");
+
+            const avatarTitle = document.getElementById("profile-avatar-title");
+
+            const avatarDescription = document.getElementById("profile-avatar-description");
+
+            const selectedAvatar = getSelectedAvatar();
+
+            if (selectedAvatar) {
+
+                avatarImage.src = normalizeAvatarUrl(selectedAvatar.image_url);
+
+                avatarTitle.textContent =
+                    selectedAvatar.name || "Avatar Padrão";
+
+                avatarDescription.textContent =
+                    selectedAvatar.description || "Avatar selecionado para o seu perfil.";
+
+                return;
+
+            }
+
+            const fallbackAvatarUrl =
+                profileState.user && profileState.user.avatar_url
+                    ? profileState.user.avatar_url
+                    : DEFAULT_AVATAR_URL;
+
+            avatarImage.src = normalizeAvatarUrl(fallbackAvatarUrl);
+
+            avatarTitle.textContent = "Avatar Padrão";
+
+            avatarDescription.textContent =
+                "Avatar inicial concedido a todos os leitores.";
 
         }
 
@@ -842,44 +999,6 @@
             }
 
             renderCurrentAvatar();
-
-        }
-
-        function renderCurrentAvatar() {
-
-            const avatarImage = document.getElementById("profile-avatar-image");
-
-            const avatarTitle = document.getElementById("profile-avatar-title");
-
-            const avatarDescription = document.getElementById("profile-avatar-description");
-
-            const selectedAvatar = getSelectedAvatar();
-
-            if (selectedAvatar) {
-
-                avatarImage.src = normalizeAvatarUrl(selectedAvatar.image_url);
-
-                avatarTitle.textContent =
-                    selectedAvatar.name || "Avatar Padrão";
-
-                avatarDescription.textContent =
-                    selectedAvatar.description || "Avatar selecionado para o seu perfil.";
-
-                return;
-
-            }
-
-            const fallbackAvatarUrl =
-                profileState.user && profileState.user.avatar_url
-                    ? profileState.user.avatar_url
-                    : DEFAULT_AVATAR_URL;
-
-            avatarImage.src = normalizeAvatarUrl(fallbackAvatarUrl);
-
-            avatarTitle.textContent = "Avatar Padrão";
-
-            avatarDescription.textContent =
-                "Avatar inicial concedido a todos os leitores.";
 
         }
 
@@ -1048,9 +1167,25 @@
                 const data = await response.json();
 
                 if (!data.success) {
+
                     profileState.avatars = [];
+
+                    const avatarList = document.getElementById("user-avatar-list");
+
+                    if (avatarList) {
+
+                        avatarList.innerHTML = `
+                            <div class="profile-empty-box">
+                                Não foi possível carregar seus avatares. Faça login novamente.
+                            </div>
+                        `;
+
+                    }
+
                     renderCurrentAvatar();
+
                     return;
+
                 }
 
                 profileState.avatars = data.avatars || [];
@@ -1067,7 +1202,79 @@
 
                 profileState.avatars = [];
 
+                const avatarList = document.getElementById("user-avatar-list");
+
+                if (avatarList) {
+
+                    avatarList.innerHTML = `
+                        <div class="profile-empty-box">
+                            Erro ao conectar com o backend para carregar avatares.
+                        </div>
+                    `;
+
+                }
+
                 renderCurrentAvatar();
+
+            }
+
+        }
+
+        async function loadUserOutfits(userId) {
+
+            try {
+
+                const response = await fetch(`${API_URL}/users/${userId}/outfits`);
+
+                const data = await response.json();
+
+                if (!data.success) {
+
+                    profileState.outfits = [];
+
+                    const outfitList = document.getElementById("user-outfit-list");
+
+                    if (outfitList) {
+
+                        outfitList.innerHTML = `
+                            <div class="profile-empty-box">
+                                Não foi possível carregar seus trajes. Faça login novamente.
+                            </div>
+                        `;
+
+                    }
+
+                    return;
+
+                }
+
+                profileState.outfits = data.outfits || [];
+
+                const equippedOutfit = profileState.outfits.find((outfit) => {
+                    return outfit.is_equipped === true;
+                });
+
+                if (equippedOutfit) {
+                    profileState.selectedOutfitId = equippedOutfit.id;
+                }
+
+                renderCurrentOutfit();
+
+            } catch (error) {
+
+                profileState.outfits = [];
+
+                const outfitList = document.getElementById("user-outfit-list");
+
+                if (outfitList) {
+
+                    outfitList.innerHTML = `
+                        <div class="profile-empty-box">
+                            Erro ao conectar com o backend para carregar trajes.
+                        </div>
+                    `;
+
+                }
 
             }
 
@@ -1307,11 +1514,17 @@
 
             const message = document.getElementById("avatar-message");
 
+            if (!avatarList) {
+                return;
+            }
+
             const unlockedAvatars = getUnlockedAvatars();
 
             avatarList.innerHTML = "";
 
-            message.textContent = "";
+            if (message) {
+                message.textContent = "";
+            }
 
             if (!unlockedAvatars.length) {
 
@@ -1338,48 +1551,52 @@
                     : "profile-avatar-option";
 
                 const avatarActionHTML = isSelected
-    ? `
-        <span class="profile-avatar-current-badge">
-            AVATAR ATUAL
-        </span>
-    `
-    : `
-        <button
-            type="button"
-            class="profile-action-button avatar-select-button"
-        >
-            DEFINIR AVATAR
-        </button>
-    `;
+                    ? `
+                        <span class="profile-avatar-current-badge">
+                            AVATAR ATUAL
+                        </span>
+                    `
+                    : `
+                        <button
+                            type="button"
+                            class="profile-action-button avatar-select-button"
+                        >
+                            DEFINIR AVATAR
+                        </button>
+                    `;
 
-item.innerHTML = `
-    <div class="profile-avatar-option-image">
+                item.innerHTML = `
+                    <div class="profile-avatar-option-image">
 
-        <img
-            src="${escapeHTML(normalizeAvatarUrl(avatar.image_url))}"
-            alt="${escapeHTML(avatar.name || "Avatar")}"
-        >
+                        <img
+                            src="${escapeHTML(normalizeAvatarUrl(avatar.image_url))}"
+                            alt="${escapeHTML(avatar.name || "Avatar")}"
+                        >
 
-    </div>
+                    </div>
 
-    <div class="profile-avatar-option-content">
+                    <div class="profile-avatar-option-content">
 
-        <h3>${escapeHTML(avatar.name || "Avatar")}</h3>
+                        <h3>${escapeHTML(avatar.name || "Avatar")}</h3>
 
-        <p>${escapeHTML(avatar.description || "Avatar desbloqueado.")}</p>
+                        <p>${escapeHTML(avatar.description || "Avatar desbloqueado.")}</p>
 
-        <small>${escapeHTML(avatar.rarity || "Comum")}</small>
+                        <small>${escapeHTML(avatar.rarity || "Comum")}</small>
 
-    </div>
+                    </div>
 
-    ${avatarActionHTML}
-`;
+                    ${avatarActionHTML}
+                `;
 
                 const avatarImage = item.querySelector("img");
 
-                avatarImage.addEventListener("error", function () {
-                    this.src = DEFAULT_AVATAR_URL;
-                });
+                if (avatarImage) {
+
+                    avatarImage.addEventListener("error", function () {
+                        this.src = DEFAULT_AVATAR_URL;
+                    });
+
+                }
 
                 const selectButton = item.querySelector(".avatar-select-button");
 
@@ -1397,22 +1614,187 @@ item.innerHTML = `
 
         }
 
+        function renderOutfitOptions() {
+
+            const outfitList = document.getElementById("user-outfit-list");
+
+            if (!outfitList) {
+                return;
+            }
+
+            const outfits = getValidOutfits();
+
+            outfitList.innerHTML = "";
+
+            if (!outfits.length) {
+
+                outfitList.innerHTML = `
+                    <div class="profile-empty-box">
+                        Nenhum traje disponível foi encontrado.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+            outfits.forEach((outfit) => {
+
+                const isUnlocked = outfit.is_unlocked === true;
+
+                const isEquipped =
+                    outfit.is_equipped === true ||
+                    Number(outfit.id) === Number(profileState.selectedOutfitId);
+
+                const item = document.createElement("article");
+
+                item.className = "profile-outfit-option";
+
+                if (isEquipped) {
+                    item.classList.add("selected");
+                }
+
+                if (!isUnlocked) {
+                    item.classList.add("locked");
+                }
+
+                const outfitImageUrl = normalizeOutfitImageUrl(outfit.image_url);
+
+                const outfitImageHTML = outfitImageUrl
+                    ? `
+                        <img
+                            src="${escapeHTML(outfitImageUrl)}"
+                            alt="${escapeHTML(outfit.name || "Traje")}"
+                        >
+                    `
+                    : `
+                        <div class="profile-outfit-placeholder">
+                            TRAJE
+                        </div>
+                    `;
+
+                const outfitActionHTML = !isUnlocked
+                    ? `
+                        <button
+                            type="button"
+                            class="profile-action-button profile-action-button-secondary"
+                            disabled
+                        >
+                            BLOQUEADO
+                        </button>
+                    `
+                    : isEquipped
+                        ? `
+                            <span class="profile-avatar-current-badge">
+                                TRAJE EQUIPADO
+                            </span>
+                        `
+                        : `
+                            <button
+                                type="button"
+                                class="profile-action-button outfit-equip-button"
+                            >
+                                EQUIPAR
+                            </button>
+                        `;
+
+                item.innerHTML = `
+                    <div class="profile-outfit-option-image">
+
+                        ${outfitImageHTML}
+
+                    </div>
+
+                    <div class="profile-outfit-option-content">
+
+                        <h3>${escapeHTML(outfit.name || "Traje")}</h3>
+
+                        <p>${escapeHTML(outfit.description || "Traje desbloqueável.")}</p>
+
+                        <small>${escapeHTML(outfit.rarity || "Comum")}</small>
+
+                    </div>
+
+                    ${outfitActionHTML}
+                `;
+
+                const outfitImage = item.querySelector("img");
+
+                if (outfitImage) {
+
+                    outfitImage.addEventListener("error", function () {
+                        this.replaceWith(document.createTextNode("TRAJE"));
+                    });
+
+                }
+
+                const equipButton = item.querySelector(".outfit-equip-button");
+
+                if (equipButton && isUnlocked && !isEquipped) {
+
+                    equipButton.addEventListener("click", () => {
+                        selectUserOutfit(outfit.id);
+                    });
+
+                }
+
+                outfitList.appendChild(item);
+
+            });
+
+        }
+
         async function openAvatarModal() {
 
             openModal("avatar-modal");
 
-            renderAvatarOptions();
+            const avatarList = document.getElementById("user-avatar-list");
 
-            if (!profileState.avatars.length && profileState.user) {
+            const outfitList = document.getElementById("user-outfit-list");
 
-                document.getElementById("user-avatar-list").innerHTML =
-                    "Carregando avatares...";
+            const message = document.getElementById("avatar-message");
 
-                await loadUserAvatars(profileState.user.id);
+            if (message) {
+                message.textContent = "";
+            }
 
-                renderAvatarOptions();
+            if (!profileState.user || !profileState.user.id) {
+
+                if (avatarList) {
+                    avatarList.innerHTML = `
+                        <div class="profile-empty-box">
+                            Usuário não encontrado. Saia da conta e faça login novamente.
+                        </div>
+                    `;
+                }
+
+                if (outfitList) {
+                    outfitList.innerHTML = `
+                        <div class="profile-empty-box">
+                            Não foi possível carregar trajes sem usuário válido.
+                        </div>
+                    `;
+                }
+
+                return;
 
             }
+
+            if (avatarList) {
+                avatarList.innerHTML = "Carregando avatares...";
+            }
+
+            if (outfitList) {
+                outfitList.innerHTML = "Carregando trajes...";
+            }
+
+            await loadUserAvatars(profileState.user.id);
+
+            await loadUserOutfits(profileState.user.id);
+
+            renderAvatarOptions();
+
+            renderOutfitOptions();
 
         }
 
@@ -1482,6 +1864,67 @@ item.innerHTML = `
 
                 message.textContent =
                     "Não foi possível conectar com o backend para atualizar o avatar.";
+
+            }
+
+        }
+
+        async function selectUserOutfit(outfitId) {
+
+            const message = document.getElementById("avatar-message");
+
+            if (!profileState.user || !profileState.user.id) {
+
+                message.textContent = "Usuário não encontrado.";
+
+                return;
+
+            }
+
+            message.textContent = "Equipando traje...";
+
+            try {
+
+                const response = await fetch(`${API_URL}/users/${profileState.user.id}/outfit`, {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        outfit_id: outfitId
+                    })
+
+                });
+
+                const data = await response.json();
+
+                message.textContent =
+                    data.message || "Operação concluída.";
+
+                if (!data.success) {
+                    return;
+                }
+
+                profileState.selectedOutfitId = outfitId;
+
+                profileState.outfits = profileState.outfits.map((item) => {
+                    return {
+                        ...item,
+                        is_equipped: Number(item.id) === Number(outfitId)
+                    };
+                });
+
+                renderOutfitOptions();
+
+                renderCurrentOutfit();
+
+            } catch (error) {
+
+                message.textContent =
+                    "Não foi possível conectar com o backend para equipar o traje.";
 
             }
 
@@ -1588,11 +2031,14 @@ item.innerHTML = `
 
             await loadUserAvatars(user.id);
 
+            await loadUserOutfits(user.id);
+
             loadReadingProgress(user.id);
 
         });
 
     </script>
+
 
 </body>
 

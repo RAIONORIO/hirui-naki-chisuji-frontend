@@ -10645,7 +10645,9 @@ body.modal-open {
 }
 
 .profile-modal-box-large {
-    max-width: 720px;
+    max-width: 920px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
 }
 
 .profile-modal-header {
@@ -10725,6 +10727,45 @@ body.modal-open {
 /* =================================================
    PROFILE.HTML / AVATARES
 ================================================= */
+
+.profile-modal-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 34px;
+}
+
+.profile-modal-section:last-of-type {
+    margin-bottom: 0;
+}
+
+.profile-modal-section-title {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profile-modal-section-title span {
+    color: #d00000;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.profile-modal-section-title h3 {
+    color: #ffffff;
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.profile-modal-section-title p {
+    color: #bdbdbd;
+    font-size: 15px;
+    line-height: 1.6;
+}
 
 .profile-avatar-list {
     display: grid;
@@ -10808,6 +10849,93 @@ body.modal-open {
     border: 1px solid rgba(208, 0, 0, 0.45);
     border-radius: 999px;
     color: #ff6b6b;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+.profile-outfit-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 340px));
+    justify-content: center;
+    gap: 18px;
+}
+
+.profile-outfit-option {
+    width: 100%;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+    background: #0b0b0b;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    transition: 0.25s ease;
+}
+
+.profile-outfit-option:hover {
+    border-color: rgba(208, 0, 0, 0.55);
+    transform: translateY(-2px);
+}
+
+.profile-outfit-option.selected {
+    border-color: #d00000;
+    box-shadow: 0 0 30px rgba(208, 0, 0, 0.22);
+}
+
+.profile-outfit-option.locked {
+    opacity: 0.58;
+}
+
+.profile-outfit-option-image {
+    width: 100%;
+    min-height: 124px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid rgba(208, 0, 0, 0.42);
+    border-radius: 16px;
+    background:
+        radial-gradient(circle at center, rgba(208, 0, 0, 0.16), transparent 64%),
+        #111111;
+}
+
+.profile-outfit-option-image img {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;
+}
+
+.profile-outfit-placeholder {
+    color: #777777;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.profile-outfit-option-content {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.profile-outfit-option-content h3 {
+    color: #ffffff;
+    font-size: 22px;
+    line-height: 1.2;
+}
+
+.profile-outfit-option-content p {
+    color: #bdbdbd;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.profile-outfit-option-content small {
+    color: #c94b4b;
     font-size: 13px;
     font-weight: 900;
     letter-spacing: 2px;
@@ -10907,9 +11035,10 @@ body.modal-open {
         font-size: 24px;
     }
 
-    .profile-avatar-list {
-        grid-template-columns: 1fr;
-    }
+    .profile-avatar-list,
+.profile-outfit-list {
+    grid-template-columns: 1fr;
+}
 
 }
 /* =================================================
@@ -11431,4 +11560,26 @@ body.modal-open {
         justify-content: flex-start;
     }
 
+}.reader-profile-current-outfit {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 18px 0 24px;
+    padding: 16px 18px;
+    border: 1px solid rgba(208, 0, 0, 0.35);
+    border-radius: 16px;
+    background: rgba(208, 0, 0, 0.08);
+}
+
+.reader-profile-current-outfit span {
+    color: #d00000;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 3px;
+}
+
+.reader-profile-current-outfit strong {
+    color: #ffffff;
+    font-size: 18px;
+    line-height: 1.4;
 }
