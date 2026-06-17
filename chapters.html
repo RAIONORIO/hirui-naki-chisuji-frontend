@@ -155,17 +155,38 @@
 
             }
 
-            function getChapterCover(chapter) {
+            function normalizeBackendAssetUrl(url) {
 
-                if (chapter.cover_image && chapter.cover_image.trim() !== "") {
+    if (!url || url.trim() === "") {
+        return "";
+    }
 
-                    return chapter.cover_image;
+    if (
+        url.startsWith("http://") ||
+        url.startsWith("https://")
+    ) {
+        return url;
+    }
 
-                }
+    if (url.startsWith("/manga")) {
+        return `${HIRUI_API_URL}${url}`;
+    }
 
-                return `assets/capitulos/capitulo${chapter.number}.png`;
+    return url;
 
-            }
+}
+
+function getChapterCover(chapter) {
+
+    if (chapter.cover_image && chapter.cover_image.trim() !== "") {
+
+        return normalizeBackendAssetUrl(chapter.cover_image);
+
+    }
+
+    return `assets/capitulos/capitulo${chapter.number}.png`;
+
+}
 
             function getChapterDate(chapter, isUnlocked) {
 

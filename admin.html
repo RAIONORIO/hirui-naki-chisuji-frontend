@@ -387,7 +387,26 @@
             .replaceAll("'", "&#039;");
 
     }
+function normalizeBackendAssetUrl(url) {
 
+    if (!url || url.trim() === "") {
+        return "";
+    }
+
+    if (
+        url.startsWith("http://") ||
+        url.startsWith("https://")
+    ) {
+        return url;
+    }
+
+    if (url.startsWith("/manga")) {
+        return `${API_URL}${url}`;
+    }
+
+    return url;
+
+}
     function getFileNameFromUrl(url) {
 
         if (!url) {
@@ -534,8 +553,8 @@
                 const status = chapter.is_published ? "Publicado" : "Oculto";
 
                 const coverImage = chapter.cover_image
-                    ? escapeHTML(chapter.cover_image)
-                    : "";
+    ? escapeHTML(normalizeBackendAssetUrl(chapter.cover_image))
+    : "";
 
                 const coverBlock = coverImage
                     ? `
@@ -1190,18 +1209,20 @@ async function unblockUser(userId) {
 
                 pageItem.className = "chapter-page-item";
 
-                const fileName = getFileNameFromUrl(page.image_url);
+                const pageImageUrl = normalizeBackendAssetUrl(page.image_url);
+
+const fileName = getFileNameFromUrl(page.image_url);
 
                 pageItem.innerHTML = `
                     <div class="chapter-page-info">
                         <strong>Página ${escapeHTML(page.page_number)}</strong>
                         <span>Arquivo: ${escapeHTML(fileName)}</span>
-                        <small>${escapeHTML(page.image_url)}</small>
+                        <small>${escapeHTML(pageImageUrl)}</small>
                     </div>
 
                     <div class="chapter-page-actions">
                         <a
-                            href="${escapeHTML(page.image_url)}"
+                            href="${escapeHTML(pageImageUrl)}"
                             target="_blank"
                             class="admin-small-button admin-link-button"
                         >
