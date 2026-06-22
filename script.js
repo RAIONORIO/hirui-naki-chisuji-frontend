@@ -277,6 +277,33 @@ async function unlockNextChapterIfNeeded(){
     }
 
 }
+
+/* =========================================
+   NORMALIZAR URL DE IMAGEM DO BACKEND
+========================================= */
+
+function normalizeBackendImageUrl(url){
+
+    if(!url || url.trim() === ""){
+        return "";
+    }
+
+    if(
+        url.startsWith("http://")
+        ||
+        url.startsWith("https://")
+    ){
+        return url;
+    }
+
+    if(url.startsWith("/manga")){
+        return `http://127.0.0.1:8000${url}`;
+    }
+
+    return url;
+
+}
+
 /* =========================================
    CARREGAR PÁGINA
 ========================================= */
@@ -291,33 +318,49 @@ async function loadPage(page){
 
         if(!response.ok){
 
-            throw new Error("Página não encontrada");
+            throw new Error("Erro ao buscar página.");
 
         }
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
-        const testImage = new Image();
+        if(!data.success || data.end_of_chapter){
+
+            showChapterFinished();
+
+            return;
+
+        }
+
+        const imageUrl =
+            normalizeBackendImageUrl(data.image);
+
+        if(!imageUrl){
+
+            throw new Error("Imagem da página não encontrada.");
+
+        }
+
+        const testImage =
+            new Image();
 
         testImage.onload = function(){
 
-            mangaImage.style.display = "block";
+            mangaImage.style.display =
+                "block";
 
             const finishedBox =
-                document.getElementById(
-                    "chapter-finished"
-                );
+                document.getElementById("chapter-finished");
 
             if(finishedBox){
 
-                finishedBox.classList.remove(
-                    "active"
-                );
+                finishedBox.classList.remove("active");
 
             }
 
             mangaImage.src =
-                data.image + `?v=${Date.now()}`;
+                imageUrl + `?v=${Date.now()}`;
 
             controlHiddenFragment();
 
@@ -325,9 +368,9 @@ async function loadPage(page){
 
             window.scrollTo({
 
-                top:0,
+                top: 0,
 
-                behavior:"smooth"
+                behavior: "smooth"
 
             });
 
@@ -340,42 +383,52 @@ async function loadPage(page){
         };
 
         testImage.src =
-            data.image + `?v=${Date.now()}`;
+            imageUrl + `?v=${Date.now()}`;
 
     }catch(error){
+
+        console.log(
+            "Erro ao carregar página:",
+            error
+        );
 
         showChapterFinished();
 
     }
 
 }
+
+/* =========================================
+   CAPÍTULO CONCLUÍDO
+========================================= */
+
 function showChapterFinished(){
 
     const finishedBox =
-        document.getElementById(
-            "chapter-finished"
-        );
+        document.getElementById("chapter-finished");
 
-    if(!finishedBox){
+    if(!finishedBox || !mangaImage){
         return;
     }
 
     mangaImage.style.display =
         "none";
 
-    finishedBox.classList.add(
-        "active"
-    );
+    finishedBox.classList.add("active");
+
+    if(hiddenFragment){
+
+        hiddenFragment.style.display =
+            "none";
+
+    }
 
     const nextChapterBtn =
-        document.getElementById(
-            "next-chapter-btn"
-        );
+        document.getElementById("next-chapter-btn");
 
     if(nextChapterBtn){
 
-        nextChapterBtn.onclick =
-        function(){
+        nextChapterBtn.onclick = function(){
 
             const nextChapter =
                 currentChapter + 1;
