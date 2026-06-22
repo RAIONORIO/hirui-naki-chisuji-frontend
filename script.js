@@ -906,58 +906,159 @@ if (passwordRecoveryForm) {
 }
 
 /* =========================================
-   MOSTRAR USUÁRIO LOGADO NO MENU
+   MOSTRAR AVATAR DO USUÁRIO LOGADO NO MENU
 ========================================= */
 
 const navMenu =
     document.getElementById("nav-menu");
 
-if(loggedUser && navMenu){
+function normalizeMenuAvatarUrl(imageUrl) {
+
+    const fallbackAvatar =
+        "assets/avatars/default-avatar.png";
+
+    if (!imageUrl || typeof imageUrl !== "string") {
+        return fallbackAvatar;
+    }
+
+    const cleanUrl =
+        imageUrl.trim();
+
+    if (!cleanUrl) {
+        return fallbackAvatar;
+    }
+
+    if (
+        cleanUrl.startsWith("http://")
+        ||
+        cleanUrl.startsWith("https://")
+        ||
+        cleanUrl.startsWith("data:")
+    ) {
+        return cleanUrl;
+    }
+
+    if (cleanUrl.startsWith("/manga/")) {
+        return `http://127.0.0.1:8000${cleanUrl}`;
+    }
+
+    if (cleanUrl.startsWith("manga/")) {
+        return `http://127.0.0.1:8000/${cleanUrl}`;
+    }
+
+    return cleanUrl;
+
+}
+
+function getMenuAvatarUrl(user) {
+
+    if (!user) {
+        return "assets/avatars/default-avatar.png";
+    }
+
+    return normalizeMenuAvatarUrl(
+        user.avatar_url
+        ||
+        user.avatarUrl
+        ||
+        "assets/avatars/default-avatar.png"
+    );
+
+}
+
+if (loggedUser && navMenu) {
 
     const loginLink =
         navMenu.querySelector('a[href="login.html"]');
 
-    if(loginLink){
+    if (loginLink) {
 
-        loginLink.innerHTML =
-            `${loggedUser.apelido} ▼`;
+        const userMenuContainer =
+            document.createElement("span");
+
+        userMenuContainer.className =
+            "logged-user-menu";
+
+        navMenu.insertBefore(
+            userMenuContainer,
+            loginLink
+        );
+
+        userMenuContainer.appendChild(
+            loginLink
+        );
 
         loginLink.href =
             "#";
 
-        loginLink.classList.add("logged-user-link");
+        loginLink.classList.add(
+            "logged-user-link"
+        );
 
-        const dropdown = document.createElement("div");
+        loginLink.textContent =
+            "";
+
+        loginLink.title =
+            loggedUser.apelido || "Perfil do usuário";
+
+        const avatarFrame =
+            document.createElement("span");
+
+        avatarFrame.className =
+            "logged-user-avatar-frame";
+
+        const avatarImage =
+            document.createElement("img");
+
+        avatarImage.src =
+            getMenuAvatarUrl(loggedUser);
+
+        avatarImage.alt =
+            "Avatar do usuário";
+
+        avatarImage.addEventListener(
+            "error",
+            function () {
+
+                this.src =
+                    "assets/avatars/default-avatar.png";
+
+            }
+        );
+
+        avatarFrame.appendChild(
+            avatarImage
+        );
+
+        loginLink.appendChild(
+            avatarFrame
+        );
+
+        const dropdown =
+            document.createElement("div");
 
         dropdown.className =
             "user-dropdown";
 
         dropdown.innerHTML = `
 
-    <a href="profile.html" id="profile-btn">
+            <a href="profile.html" id="profile-btn">
+                Perfil
+            </a>
 
-        Perfil
+            <a href="#" id="logout-btn">
+                Sair
+            </a>
 
-    </a>
+        `;
 
-    <a href="#" id="logout-btn">
-
-        Sair
-
-    </a>
-
-`;
-
-        loginLink.parentElement.style.position =
-            "relative";
-
-        loginLink.parentElement.appendChild(
+        userMenuContainer.appendChild(
             dropdown
         );
 
         loginLink.addEventListener(
             "click",
-            function(event){
+            function(event) {
 
                 event.preventDefault();
 
@@ -970,13 +1071,11 @@ if(loggedUser && navMenu){
 
         document.addEventListener(
             "click",
-            function(event){
+            function(event) {
 
-                if(
-                    !loginLink.contains(event.target)
-                    &&
-                    !dropdown.contains(event.target)
-                ){
+                if (
+                    !userMenuContainer.contains(event.target)
+                ) {
 
                     dropdown.classList.remove(
                         "active"
@@ -988,28 +1087,31 @@ if(loggedUser && navMenu){
         );
 
         const logoutBtn =
-            document.getElementById(
-                "logout-btn"
+            dropdown.querySelector("#logout-btn");
+
+        if (logoutBtn) {
+
+            logoutBtn.addEventListener(
+                "click",
+                function(event) {
+
+                    event.preventDefault();
+
+                    localStorage.removeItem(
+                        "hiruiUser"
+                    );
+
+                    window.location.reload();
+
+                }
             );
 
-        logoutBtn.addEventListener(
-            "click",
-            function(event){
-
-                event.preventDefault();
-
-                localStorage.removeItem(
-                    "hiruiUser"
-                );
-
-                window.location.reload();
-
-            }
-        );
+        }
 
     }
 
 }
+
 /* =========================================
    CONTINUAR LEITURA NA HOME
 ========================================= */

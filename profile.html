@@ -613,65 +613,43 @@
 
             </div>
 
-            <div class="profile-modal-section">
+                        <div class="profile-modal-section">
 
-    <div class="profile-modal-section-title">
+                <div class="profile-modal-section-title">
 
-        <span>AVATARES DESBLOQUEADOS</span>
+                    <span>AVATARES DESBLOQUEADOS</span>
 
-        <h3>
-            Escolha seu avatar
-        </h3>
+                    <h3>
+                        Escolha seu avatar
+                    </h3>
 
-        <p>
-            Avatares oficiais desbloqueados pela leitura ou por recompensas.
-        </p>
+                    <p>
+                        Avatares oficiais desbloqueados pela leitura ou por recompensas.
+                    </p>
 
-    </div>
+                </div>
 
-    <div
-        id="user-avatar-list"
-        class="profile-avatar-list"
-    >
-        Carregando avatares...
-    </div>
+                <div
+                    id="user-avatar-list"
+                    class="profile-avatar-list"
+                >
+                    Carregando avatares...
+                </div>
 
-</div>
+                <p
+                    id="avatar-message"
+                    class="reader-profile-message"
+                ></p>
 
-<div class="profile-modal-section">
+            </div>
 
-    <div class="profile-modal-section-title">
-
-        <span>TRAJES DESBLOQUEADOS</span>
-
-        <h3>
-            Escolha seu traje
-        </h3>
-
-        <p>
-            Trajes são liberados conforme seu avanço nos capítulos.
-        </p>
+        </div>
 
     </div>
 
-    <div
-        id="user-outfit-list"
-        class="profile-outfit-list"
-    >
-        Carregando trajes...
-    </div>
-
-</div>
-
-<p
-    id="avatar-message"
-    class="reader-profile-message"
-></p>
-
-    </div>
-
-    </div>
-
+    <!-- =========================================
+         JAVASCRIPT DO PERFIL
+    ========================================== -->
     <!-- =========================================
          JAVASCRIPT DO PERFIL
     ========================================== -->
@@ -846,12 +824,70 @@
 
         function getUnlockedAvatars() {
 
-            return getValidAvatars().filter((avatar) => {
-                return avatar.is_unlocked === true;
-            });
+    const validAvatars =
+        getValidAvatars();
 
+    const visibleAvatars = [];
+
+    const defaultAvatar =
+        validAvatars.find((avatar) => {
+
+            const sourceType =
+                String(avatar.source_type || "").trim();
+
+            const name =
+                String(avatar.name || "").trim();
+
+            return (
+                avatar.is_active !== false
+                &&
+                (
+                    sourceType === "initial"
+                    ||
+                    name === "Avatar Padrão"
+                )
+            );
+
+        });
+
+    if (defaultAvatar) {
+        visibleAvatars.push(defaultAvatar);
+    }
+
+    validAvatars.forEach((avatar) => {
+
+        const sourceType =
+            String(avatar.source_type || "").trim();
+
+        const name =
+            String(avatar.name || "").trim();
+
+        const isDefault =
+            (
+                sourceType === "initial"
+                ||
+                name === "Avatar Padrão"
+            );
+
+        if (isDefault) {
+            return;
         }
 
+        if (avatar.is_active === false) {
+            return;
+        }
+
+        if (avatar.is_unlocked !== true) {
+            return;
+        }
+
+        visibleAvatars.push(avatar);
+
+    });
+
+    return visibleAvatars;
+
+}
         function getValidOutfits() {
 
             return profileState.outfits.filter((outfit) => {
@@ -1746,57 +1782,41 @@
 
         async function openAvatarModal() {
 
-            openModal("avatar-modal");
+    openModal("avatar-modal");
 
-            const avatarList = document.getElementById("user-avatar-list");
+    const avatarList =
+        document.getElementById("user-avatar-list");
 
-            const outfitList = document.getElementById("user-outfit-list");
+    const message =
+        document.getElementById("avatar-message");
 
-            const message = document.getElementById("avatar-message");
+    if (message) {
+        message.textContent = "";
+    }
 
-            if (message) {
-                message.textContent = "";
-            }
+    if (!profileState.user || !profileState.user.id) {
 
-            if (!profileState.user || !profileState.user.id) {
-
-                if (avatarList) {
-                    avatarList.innerHTML = `
-                        <div class="profile-empty-box">
-                            Usuário não encontrado. Saia da conta e faça login novamente.
-                        </div>
-                    `;
-                }
-
-                if (outfitList) {
-                    outfitList.innerHTML = `
-                        <div class="profile-empty-box">
-                            Não foi possível carregar trajes sem usuário válido.
-                        </div>
-                    `;
-                }
-
-                return;
-
-            }
-
-            if (avatarList) {
-                avatarList.innerHTML = "Carregando avatares...";
-            }
-
-            if (outfitList) {
-                outfitList.innerHTML = "Carregando trajes...";
-            }
-
-            await loadUserAvatars(profileState.user.id);
-
-            await loadUserOutfits(profileState.user.id);
-
-            renderAvatarOptions();
-
-            renderOutfitOptions();
-
+        if (avatarList) {
+            avatarList.innerHTML = `
+                <div class="profile-empty-box">
+                    Usuário não encontrado. Saia da conta e faça login novamente.
+                </div>
+            `;
         }
+
+        return;
+
+    }
+
+    if (avatarList) {
+        avatarList.innerHTML = "Carregando avatares...";
+    }
+
+    await loadUserAvatars(profileState.user.id);
+
+    renderAvatarOptions();
+
+}
 
         async function selectUserAvatar(avatarId, avatar) {
 

@@ -328,7 +328,147 @@
         Depois de resetar a senha no card do usuário, marque a solicitação como resolvida.
     </p>
 
-    <div id="password-recovery-list" class="password-recovery-list"></div>
+        <div id="password-recovery-list" class="password-recovery-list"></div>
+
+</div>
+
+<!-- =========================================
+     GERENCIAR AVATARES
+========================================== -->
+
+<div class="admin-card admin-card-large">
+
+    <div class="admin-card-header">
+
+        <h3 id="avatar-form-title">CRIAR AVATAR</h3>
+
+        <button
+            type="button"
+            class="admin-small-button"
+            onclick="loadAvatars()"
+        >
+            ATUALIZAR AVATARES
+        </button>
+
+    </div>
+
+    <div id="avatar-edit-info" class="admin-edit-info" style="display: none;">
+        Editando avatar existente
+    </div>
+
+    <form id="avatar-form" class="admin-form">
+
+        <input
+            type="text"
+            id="avatar-name"
+            placeholder="Nome do avatar"
+            required
+        >
+
+        <input
+            type="text"
+            id="avatar-description"
+            placeholder="Descrição do avatar"
+        >
+
+        <input
+            type="text"
+            id="avatar-rarity"
+            placeholder="Raridade. Ex: Comum, Incomum, Raro"
+            value="Comum"
+            required
+        >
+
+        <input
+            type="text"
+            id="avatar-source-type"
+            placeholder="Origem. Ex: chapter_reward"
+            value="chapter_reward"
+            required
+        >
+
+        <input
+            type="text"
+            id="avatar-unlock-type"
+            placeholder="Tipo de desbloqueio. Ex: chapter_finish"
+            value="chapter_finish"
+        >
+
+        <input
+            type="text"
+            id="avatar-unlock-key"
+            placeholder="Chave de desbloqueio. Ex: cap1, cap0, cap2"
+        >
+
+        <input
+            type="number"
+            id="avatar-price"
+            placeholder="Preço"
+            value="0"
+            min="0"
+        >
+
+        <label class="admin-checkbox-line">
+
+            <input
+                type="checkbox"
+                id="avatar-is-active"
+                checked
+            >
+
+            Avatar ativo
+
+        </label>
+
+        <input
+            type="file"
+            id="avatar-image"
+            accept="image/jpeg,image/png,image/webp"
+        >
+
+        <p class="admin-help-text">
+            Para recompensas de capítulo, use:
+            source_type = chapter_reward,
+            unlock_type = chapter_finish,
+            unlock_key = cap1, cap0, cap2 etc.
+        </p>
+
+        <button type="submit" id="avatar-submit-button">
+            CRIAR AVATAR
+        </button>
+
+        <button
+            type="button"
+            id="avatar-cancel-edit-button"
+            class="admin-secondary-button"
+            style="display: none;"
+        >
+            CANCELAR EDIÇÃO
+        </button>
+
+    </form>
+
+    <div id="avatar-message" class="admin-message"></div>
+
+</div>
+
+<div class="admin-card admin-card-large">
+
+    <div class="admin-card-header">
+
+        <h3>AVATARES CADASTRADOS</h3>
+
+        <button
+            type="button"
+            class="admin-small-button"
+            onclick="loadAvatars()"
+        >
+            ATUALIZAR LISTA
+        </button>
+
+    </div>
+
+    <div id="avatar-list" class="avatar-list"></div>
 
 </div>
 
@@ -347,11 +487,13 @@
     const coverForm = document.getElementById("cover-form");
     const pageForm = document.getElementById("page-form");
     const bulkPageForm = document.getElementById("bulk-page-form");
+    const avatarForm = document.getElementById("avatar-form");
 
     const chapterMessage = document.getElementById("chapter-message");
     const coverMessage = document.getElementById("cover-message");
     const pageMessage = document.getElementById("page-message");
     const bulkPageMessage = document.getElementById("bulk-page-message");
+    const avatarMessage = document.getElementById("avatar-message");
 
     const chapterList = document.getElementById("chapter-list");
     const userList = document.getElementById("user-list");
@@ -368,10 +510,17 @@
     const pagesPanel = document.getElementById("pages-panel");
     const selectedChapterTitle = document.getElementById("selected-chapter-title");
     const chapterPagesList = document.getElementById("chapter-pages-list");
+    const avatarList = document.getElementById("avatar-list");
+    const avatarFormTitle = document.getElementById("avatar-form-title");
+    const avatarEditInfo = document.getElementById("avatar-edit-info");
+    const avatarSubmitButton = document.getElementById("avatar-submit-button");
+    const avatarCancelEditButton = document.getElementById("avatar-cancel-edit-button");
 
     let chaptersCache = [];
     let editingChapterId = null;
     let selectedChapterId = null;
+    let avatarsCache = [];
+    let editingAvatarId = null;
 
     function escapeHTML(value) {
 
@@ -419,6 +568,351 @@ function normalizeBackendAssetUrl(url) {
         return parts[parts.length - 1] || url;
 
     }
+
+function resetAvatarForm() {
+
+    editingAvatarId = null;
+
+    avatarForm.reset();
+
+    document.getElementById("avatar-rarity").value = "Comum";
+    document.getElementById("avatar-source-type").value = "chapter_reward";
+    document.getElementById("avatar-unlock-type").value = "chapter_finish";
+    document.getElementById("avatar-price").value = 0;
+    document.getElementById("avatar-is-active").checked = true;
+
+    avatarFormTitle.textContent = "CRIAR AVATAR";
+    avatarSubmitButton.textContent = "CRIAR AVATAR";
+
+    avatarEditInfo.style.display = "none";
+    avatarCancelEditButton.style.display = "none";
+
+    avatarMessage.textContent = "";
+
+}
+
+function fillAvatarForm(avatarId) {
+
+    const avatar = avatarsCache.find((item) => {
+        return Number(item.id) === Number(avatarId);
+    });
+
+    if (!avatar) {
+
+        avatarMessage.textContent = "Avatar não encontrado na lista carregada.";
+
+        return;
+
+    }
+
+    editingAvatarId = avatar.id;
+
+    document.getElementById("avatar-name").value = avatar.name || "";
+    document.getElementById("avatar-description").value = avatar.description || "";
+    document.getElementById("avatar-rarity").value = avatar.rarity || "Comum";
+    document.getElementById("avatar-source-type").value = avatar.source_type || "chapter_reward";
+    document.getElementById("avatar-unlock-type").value = avatar.unlock_type || "";
+    document.getElementById("avatar-unlock-key").value = avatar.unlock_key || "";
+    document.getElementById("avatar-price").value = avatar.price || 0;
+    document.getElementById("avatar-is-active").checked = avatar.is_active === true;
+
+    avatarFormTitle.textContent = "EDITAR AVATAR";
+    avatarSubmitButton.textContent = "SALVAR AVATAR";
+
+    avatarEditInfo.textContent = `Editando: ${avatar.name}`;
+    avatarEditInfo.style.display = "block";
+    avatarCancelEditButton.style.display = "block";
+
+    avatarMessage.textContent = "";
+
+    avatarForm.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+function getAvatarPayload() {
+
+    const unlockTypeValue =
+        document.getElementById("avatar-unlock-type").value.trim();
+
+    const unlockKeyValue =
+        document.getElementById("avatar-unlock-key").value.trim();
+
+    return {
+        name: document.getElementById("avatar-name").value.trim(),
+        description: document.getElementById("avatar-description").value.trim() || null,
+        image_url: null,
+        rarity: document.getElementById("avatar-rarity").value.trim() || "Comum",
+        source_type: document.getElementById("avatar-source-type").value.trim() || "chapter_reward",
+        unlock_type: unlockTypeValue || null,
+        unlock_key: unlockKeyValue || null,
+        price: Number(document.getElementById("avatar-price").value || 0),
+        is_active: document.getElementById("avatar-is-active").checked
+    };
+
+}
+
+async function uploadAvatarImage(avatarId) {
+
+    const image =
+        document.getElementById("avatar-image").files[0];
+
+    if (!image) {
+        return true;
+    }
+
+    const formData = new FormData();
+
+    formData.append("image", image);
+
+    const response = await fetch(`${API_URL}/admin/avatars/${avatarId}/upload`, {
+
+        method: "POST",
+
+        body: formData
+
+    });
+
+    const data = await response.json();
+
+    avatarMessage.textContent = data.message || "Upload de imagem processado.";
+
+    return data.success === true;
+
+}
+
+async function loadAvatars() {
+
+    if (!avatarList) {
+        return;
+    }
+
+    avatarList.innerHTML = "Carregando avatares...";
+
+    try {
+
+        const response = await fetch(`${API_URL}/admin/avatars`);
+
+        const data = await response.json();
+
+        if (!data.success || !Array.isArray(data.avatars)) {
+
+            avatarList.innerHTML = "Não foi possível carregar os avatares.";
+
+            return;
+
+        }
+
+        avatarsCache = data.avatars;
+
+        if (avatarsCache.length === 0) {
+
+            avatarList.innerHTML = "Nenhum avatar cadastrado ainda.";
+
+            return;
+
+        }
+
+        avatarList.innerHTML = "";
+
+        avatarsCache.forEach((avatar) => {
+
+            const item = document.createElement("div");
+
+            item.className = "chapter-item";
+
+            const avatarImageUrl =
+                normalizeBackendAssetUrl(avatar.image_url);
+
+            const status =
+                avatar.is_active ? "Ativo" : "Inativo";
+
+            const imageBlock = avatarImageUrl
+                ? `
+                    <div class="chapter-cover-preview">
+                        <img src="${escapeHTML(avatarImageUrl)}" alt="${escapeHTML(avatar.name)}">
+                    </div>
+                `
+                : `
+                    <div class="chapter-cover-preview chapter-cover-placeholder">
+                        SEM IMAGEM
+                    </div>
+                `;
+
+            const deleteButton = avatar.source_type === "initial"
+                ? ""
+                : `
+                    <button type="button" class="admin-danger-button avatar-delete-button">
+                        EXCLUIR
+                    </button>
+                `;
+
+            item.innerHTML = `
+                <div class="chapter-item-with-cover">
+
+                    ${imageBlock}
+
+                    <div class="chapter-item-content">
+
+                        <div class="chapter-item-main">
+                            <strong>${escapeHTML(avatar.name)}</strong>
+                            <span>${escapeHTML(avatar.description || "Sem descrição")}</span>
+                        </div>
+
+                        <div class="chapter-item-meta">
+                            <small>ID: ${escapeHTML(avatar.id)}</small>
+                            <small>Status: ${escapeHTML(status)}</small>
+                            <small>Raridade: ${escapeHTML(avatar.rarity || "Comum")}</small>
+                            <small>Origem: ${escapeHTML(avatar.source_type || "Não informada")}</small>
+                            <small>Desbloqueio: ${escapeHTML(avatar.unlock_type || "Livre")} / ${escapeHTML(avatar.unlock_key || "Sem chave")}</small>
+                            <small>Preço: ${escapeHTML(avatar.price || 0)}</small>
+                        </div>
+
+                        <div class="chapter-item-actions">
+
+                            <button type="button" class="admin-small-button avatar-edit-button">
+                                EDITAR
+                            </button>
+
+                            <button type="button" class="admin-small-button avatar-toggle-button">
+                                ${avatar.is_active ? "INATIVAR" : "ATIVAR"}
+                            </button>
+
+                            ${deleteButton}
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+            const editButton =
+                item.querySelector(".avatar-edit-button");
+
+            const toggleButton =
+                item.querySelector(".avatar-toggle-button");
+
+            const removeButton =
+                item.querySelector(".avatar-delete-button");
+
+            editButton.addEventListener("click", () => {
+
+                fillAvatarForm(avatar.id);
+
+            });
+
+            toggleButton.addEventListener("click", () => {
+
+                toggleAvatarActive(avatar.id);
+
+            });
+
+            if (removeButton) {
+
+                removeButton.addEventListener("click", () => {
+
+                    deleteAvatar(avatar.id);
+
+                });
+
+            }
+
+            avatarList.appendChild(item);
+
+        });
+
+    } catch (error) {
+
+        avatarList.innerHTML = "Erro ao conectar com o backend.";
+
+    }
+
+}
+
+async function toggleAvatarActive(avatarId) {
+
+    const avatar = avatarsCache.find((item) => {
+        return Number(item.id) === Number(avatarId);
+    });
+
+    if (!avatar) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(`${API_URL}/admin/avatars/${avatarId}`, {
+
+            method: "PUT",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                is_active: !avatar.is_active
+            })
+
+        });
+
+        const data = await response.json();
+
+        alert(data.message || "Avatar atualizado.");
+
+        if (data.success) {
+
+            loadAvatars();
+
+        }
+
+    } catch (error) {
+
+        alert("Erro ao atualizar avatar.");
+
+    }
+
+}
+
+async function deleteAvatar(avatarId) {
+
+    const confirmed = confirm("Deseja excluir este avatar?");
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(`${API_URL}/admin/avatars/${avatarId}`, {
+
+            method: "DELETE"
+
+        });
+
+        const data = await response.json();
+
+        alert(data.message || "Operação concluída.");
+
+        if (data.success) {
+
+            if (Number(editingAvatarId) === Number(avatarId)) {
+                resetAvatarForm();
+            }
+
+            loadAvatars();
+
+        }
+
+    } catch (error) {
+
+        alert("Erro ao excluir avatar.");
+
+    }
+
+}
 
     function resetChapterForm() {
 
@@ -1544,10 +2038,93 @@ const fileName = getFileNameFromUrl(page.image_url);
 
     });
 
-    loadChapters();
-loadUsers();
-loadPasswordRecoveryRequests();
+        avatarForm.addEventListener("submit", async (event) => {
 
+        event.preventDefault();
+
+        avatarMessage.textContent = editingAvatarId
+            ? "Salvando avatar..."
+            : "Criando avatar...";
+
+        const payload = getAvatarPayload();
+
+        if (!payload.name) {
+
+            avatarMessage.textContent = "Informe o nome do avatar.";
+
+            return;
+
+        }
+
+        const isEditing = editingAvatarId !== null;
+
+        const currentAvatar = isEditing
+            ? avatarsCache.find((item) => Number(item.id) === Number(editingAvatarId))
+            : null;
+
+        if (isEditing && currentAvatar) {
+
+            payload.image_url = currentAvatar.image_url || null;
+
+        }
+
+        const url = isEditing
+            ? `${API_URL}/admin/avatars/${editingAvatarId}`
+            : `${API_URL}/admin/avatars`;
+
+        const method = isEditing ? "PUT" : "POST";
+
+        try {
+
+            const response = await fetch(url, {
+
+                method: method,
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(payload)
+
+            });
+
+            const data = await response.json();
+
+            avatarMessage.textContent = data.message || "Avatar salvo.";
+
+            if (!data.success || !data.avatar) {
+                return;
+            }
+
+            const uploaded =
+                await uploadAvatarImage(data.avatar.id);
+
+            if (!uploaded) {
+                return;
+            }
+
+            resetAvatarForm();
+
+            await loadAvatars();
+
+        } catch (error) {
+
+            avatarMessage.textContent = "Erro ao salvar avatar.";
+
+        }
+
+    });
+
+    avatarCancelEditButton.addEventListener("click", () => {
+
+        resetAvatarForm();
+
+    });
+
+    loadChapters();
+    loadUsers();
+    loadPasswordRecoveryRequests();
+    loadAvatars();
 </script>
 
 <script src="admin-access.js"></script>
