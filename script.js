@@ -180,12 +180,13 @@ async function unlockNextChapterIfNeeded(){
     }
 
     const lastPages = {
-        1: 38,
-        2: 40,
-        3: 23,
-        4: 19,
-        5: 1
-    };
+    0: 40,
+    1: 38,
+    2: 40,
+    3: 23,
+    4: 19,
+    5: 1
+};
 
     const lastPageOfCurrentChapter =
         lastPages[currentChapter];
@@ -244,24 +245,47 @@ async function unlockNextChapterIfNeeded(){
         const rewardData =
             await rewardResponse.json();
 
-        if(
-            rewardData.success
-            &&
-            rewardData.unlocked_outfits
-            &&
-            rewardData.unlocked_outfits.length > 0
-        ){
+        if(rewardData.success){
 
-            const outfitNames =
-                rewardData.unlocked_outfits
-                .map((outfit) => outfit.name)
-                .join(", ");
+    const unlockedRewardNames = [];
 
-            alert(
-                `Nova recompensa desbloqueada: ${outfitNames}`
-            );
+    if(
+        rewardData.unlocked_outfits
+        &&
+        rewardData.unlocked_outfits.length > 0
+    ){
 
-        }
+        rewardData.unlocked_outfits.forEach((outfit) => {
+
+            unlockedRewardNames.push(outfit.name);
+
+        });
+
+    }
+
+    if(
+        rewardData.unlocked_avatars
+        &&
+        rewardData.unlocked_avatars.length > 0
+    ){
+
+        rewardData.unlocked_avatars.forEach((avatar) => {
+
+            unlockedRewardNames.push(avatar.name);
+
+        });
+
+    }
+
+    if(unlockedRewardNames.length > 0){
+
+        alert(
+            `Nova recompensa desbloqueada: ${unlockedRewardNames.join(", ")}`
+        );
+
+    }
+
+}
 
         console.log(
             `Capítulo ${nextChapter} desbloqueado.`
