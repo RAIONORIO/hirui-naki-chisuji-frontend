@@ -686,12 +686,7 @@ if(registerForm){
 
                 if(data.success){
 
-                    setTimeout(() => {
-
-                        window.location.href =
-                            "login.html";
-
-                    },2000);
+                    registerForm.reset();
 
                 }
 

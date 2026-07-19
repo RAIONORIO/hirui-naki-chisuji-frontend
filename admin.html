@@ -299,6 +299,11 @@
 
     </div>
 
+        <p class="admin-help-text">
+        Novos cadastros entram como aguardando aprovação.
+        Use APROVAR ACESSO apenas para leitores autorizados.
+    </p>
+
     <div id="user-list" class="user-list"></div>
 
 </div>
@@ -1185,9 +1190,31 @@ async function loadUsers() {
 
         }
 
+        const orderedUsers = [...data.users].sort((firstUser, secondUser) => {
+
+            if (firstUser.is_admin && !secondUser.is_admin) {
+                return -1;
+            }
+
+            if (!firstUser.is_admin && secondUser.is_admin) {
+                return 1;
+            }
+
+            if (firstUser.is_blocked && !secondUser.is_blocked) {
+                return -1;
+            }
+
+            if (!firstUser.is_blocked && secondUser.is_blocked) {
+                return 1;
+            }
+
+            return Number(firstUser.id) - Number(secondUser.id);
+
+        });
+
         userList.innerHTML = "";
 
-        data.users.forEach((user) => {
+        orderedUsers.forEach((user) => {
 
             const item = document.createElement("div");
 
@@ -1195,34 +1222,49 @@ async function loadUsers() {
                 ? "user-item user-item-blocked"
                 : "user-item";
 
-            const status = user.is_blocked ? "Bloqueado" : "Ativo";
+            const status = user.is_blocked
+                ? "Aguardando aprovação / bloqueado"
+                : "Ativo";
 
             const type = user.is_admin ? "Administrador" : "Usuário";
 
+            const approvalButton = user.is_blocked
+                ? `
+                    <button
+                        type="button"
+                        class="admin-small-button user-unblock-button"
+                    >
+                        APROVAR ACESSO
+                    </button>
+                `
+                : `
+                    <button
+                        type="button"
+                        class="admin-danger-button user-block-button"
+                    >
+                        BLOQUEAR
+                    </button>
+                `;
+
             const actionButton = user.is_admin
-    ? ""
-    : `
-                <button
-            type="button"
-            class="${user.is_blocked ? "admin-small-button user-unblock-button" : "admin-danger-button user-block-button"}"
-        >
-            ${user.is_blocked ? "DESBLOQUEAR" : "BLOQUEAR"}
-        </button>
+                ? ""
+                : `
+                    ${approvalButton}
 
-        <button
-            type="button"
-            class="admin-small-button user-reset-password-button"
-        >
-            RESETAR SENHA
-        </button>
+                    <button
+                        type="button"
+                        class="admin-small-button user-reset-password-button"
+                    >
+                        RESETAR SENHA
+                    </button>
 
-        <button
-            type="button"
-            class="admin-danger-button user-delete-button"
-        >
-            EXCLUIR
-        </button>
-    `;
+                    <button
+                        type="button"
+                        class="admin-danger-button user-delete-button"
+                    >
+                        EXCLUIR
+                    </button>
+                `;
 
             item.innerHTML = `
                 <div class="user-item-main">
@@ -1243,13 +1285,10 @@ async function loadUsers() {
                 </div>
             `;
 
-           const blockButton = item.querySelector(".user-block-button");
-           
-           const unblockButton = item.querySelector(".user-unblock-button");
-           
-           const resetPasswordButton = item.querySelector(".user-reset-password-button");
-
-const deleteButton = item.querySelector(".user-delete-button");
+            const blockButton = item.querySelector(".user-block-button");
+            const unblockButton = item.querySelector(".user-unblock-button");
+            const resetPasswordButton = item.querySelector(".user-reset-password-button");
+            const deleteButton = item.querySelector(".user-delete-button");
 
             if (blockButton) {
 
@@ -1270,55 +1309,26 @@ const deleteButton = item.querySelector(".user-delete-button");
                 });
 
             }
-            
+
             if (resetPasswordButton) {
 
-    resetPasswordButton.addEventListener("click", () => {
+                resetPasswordButton.addEventListener("click", () => {
 
-        resetUserPassword(user.id, user.email);
+                    resetUserPassword(user.id, user.email);
 
-    });
+                });
 
-}
+            }
 
-if (resetPasswordButton) {
+            if (deleteButton) {
 
-    resetPasswordButton.addEventListener("click", () => {
+                deleteButton.addEventListener("click", () => {
 
-        resetUserPassword(user.id, user.email);
+                    deleteUser(user.id);
 
-    });
+                });
 
-}
-
-if (resetPasswordButton) {
-
-    resetPasswordButton.addEventListener("click", () => {
-
-        resetUserPassword(user.id, user.email);
-
-    });
-
-}
-
-if (resetPasswordButton) {
-    resetPasswordButton.addEventListener("click", () => {
-
-        resetUserPassword(user.id, user.email);
-
-        });
-
-        }
-
-        if (deleteButton) {
-
-           deleteButton.addEventListener("click", () => {
-            
-            deleteUser(user.id);
-
-            });
-
-        }
+            }
 
             userList.appendChild(item);
 
@@ -1451,7 +1461,7 @@ async function deleteUser(userId) {
 
 async function blockUser(userId) {
 
-    const confirmed = confirm("Deseja bloquear este usuário? Ele não poderá mais fazer login.");
+    const confirmed = confirm("Deseja bloquear este usuário? Ele não poderá mais fazer login até ser aprovado novamente.");
 
     if (!confirmed) {
         return;
@@ -1486,7 +1496,7 @@ async function blockUser(userId) {
 
 async function unblockUser(userId) {
 
-    const confirmed = confirm("Deseja desbloquear este usuário? Ele poderá fazer login novamente.");
+    const confirmed = confirm("Deseja aprovar o acesso deste usuário? Ele poderá fazer login normalmente.");
 
     if (!confirmed) {
         return;
@@ -1517,6 +1527,160 @@ async function unblockUser(userId) {
     }
 
 }
+
+async function loadPasswordRecoveryRequests() {
+
+    if (!passwordRecoveryList) {
+        return;
+    }
+
+    passwordRecoveryList.innerHTML = "Carregando solicitações...";
+
+    try {
+
+        const response = await fetch(`${API_URL}/admin/password-recovery-requests`);
+
+        const data = await response.json();
+
+        if (!data.success || !Array.isArray(data.requests)) {
+
+            passwordRecoveryList.innerHTML = "Não foi possível carregar as solicitações.";
+
+            return;
+
+        }
+
+        if (data.requests.length === 0) {
+
+            passwordRecoveryList.innerHTML = "Nenhuma solicitação de recuperação cadastrada.";
+
+            return;
+
+        }
+
+        const orderedRequests = [...data.requests].sort((firstRequest, secondRequest) => {
+
+            if (firstRequest.status === "pending" && secondRequest.status !== "pending") {
+                return -1;
+            }
+
+            if (firstRequest.status !== "pending" && secondRequest.status === "pending") {
+                return 1;
+            }
+
+            return Number(secondRequest.id) - Number(firstRequest.id);
+
+        });
+
+        passwordRecoveryList.innerHTML = "";
+
+        orderedRequests.forEach((request) => {
+
+            const item = document.createElement("div");
+
+            item.className = request.status === "pending"
+                ? "user-item user-item-blocked"
+                : "user-item";
+
+            const status = request.status === "pending"
+                ? "Pendente"
+                : "Resolvida";
+
+            const resolveButton = request.status === "pending"
+                ? `
+                    <button
+                        type="button"
+                        class="admin-small-button password-recovery-resolve-button"
+                    >
+                        MARCAR COMO RESOLVIDA
+                    </button>
+                `
+                : "";
+
+            item.innerHTML = `
+                <div class="user-item-main">
+                    <strong>${escapeHTML(request.email)}</strong>
+                    <span>Telefone: ${escapeHTML(request.telefone || "Não informado")}</span>
+                </div>
+
+                <div class="user-item-meta">
+                    <small>Status: ${escapeHTML(status)}</small>
+                    <small>ID: ${escapeHTML(request.id)}</small>
+                    <small>Criada em: ${escapeHTML(request.created_at || "Não informado")}</small>
+                    <small>Resolvida em: ${escapeHTML(request.resolved_at || "Não resolvida")}</small>
+                </div>
+
+                <div class="user-item-actions">
+                    ${resolveButton}
+                </div>
+            `;
+
+            const resolveButtonElement = item.querySelector(".password-recovery-resolve-button");
+
+            if (resolveButtonElement) {
+
+                resolveButtonElement.addEventListener("click", () => {
+
+                    resolvePasswordRecoveryRequest(request.id);
+
+                });
+
+            }
+
+            passwordRecoveryList.appendChild(item);
+
+        });
+
+    } catch (error) {
+
+        passwordRecoveryList.innerHTML = "Erro ao conectar com o backend.";
+
+    }
+
+}
+
+async function resolvePasswordRecoveryRequest(requestId) {
+
+    const confirmed = confirm("Deseja marcar esta solicitação de recuperação como resolvida?");
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(`${API_URL}/admin/password-recovery-requests/${requestId}/resolve`, {
+
+            method: "PUT",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                status: "resolved"
+            })
+
+        });
+
+        const data = await response.json();
+
+        alert(data.message || "Solicitação atualizada.");
+
+        if (data.success) {
+
+            loadPasswordRecoveryRequests();
+
+        }
+
+    } catch (error) {
+
+        alert("Erro ao atualizar solicitação de recuperação.");
+
+    }
+
+}
+
     async function toggleChapterPublished(chapterId) {
 
         const chapter = chaptersCache.find((item) => item.id === chapterId);
