@@ -67,7 +67,7 @@ async function unlockHiddenFragment(){
 
         await fetch(
 
-            "http://127.0.0.1:8000/unlocks",
+            "https://hiruibackend.shardweb.app/unlocks",
 
             {
 
@@ -134,7 +134,7 @@ async function saveReadingProgress(){
 
         await fetch(
 
-            "http://127.0.0.1:8000/reading-progress",
+            "https://hiruibackend.shardweb.app/reading-progress",
 
             {
 
@@ -206,7 +206,7 @@ async function unlockNextChapterIfNeeded(){
 
         await fetch(
 
-            "http://127.0.0.1:8000/unlocks",
+            "https://hiruibackend.shardweb.app/unlocks",
 
             {
 
@@ -232,7 +232,7 @@ async function unlockNextChapterIfNeeded(){
 
         const rewardResponse = await fetch(
 
-            `http://127.0.0.1:8000/users/${loggedUser.id}/chapters/${currentChapter}/finish`,
+            `https://hiruibackend.shardweb.app/users/${loggedUser.id}/chapters/${currentChapter}/finish`,
 
             {
 
@@ -321,7 +321,7 @@ function normalizeBackendImageUrl(url){
     }
 
     if(url.startsWith("/manga")){
-        return `http://127.0.0.1:8000${url}`;
+        return `https://hiruibackend.shardweb.app${url}`;
     }
 
     return url;
@@ -337,7 +337,7 @@ async function loadPage(page){
     try{
 
         const response = await fetch(
-            `http://127.0.0.1:8000/chapter/${currentChapter}/page/${page}`
+            `https://hiruibackend.shardweb.app/chapter/${currentChapter}/page/${page}`
         );
 
         if(!response.ok){
@@ -515,7 +515,7 @@ async function canAccessCurrentChapter(){
     try{
 
         const response = await fetch(
-            `http://127.0.0.1:8000/unlocks/${loggedUser.id}`
+            `https://hiruibackend.shardweb.app/unlocks/${loggedUser.id}`
         );
 
         const data = await response.json();
@@ -654,7 +654,7 @@ if(registerForm){
 
                 const response = await fetch(
 
-                    "http://127.0.0.1:8000/users",
+                    "https://hiruibackend.shardweb.app/users",
 
                     {
 
@@ -730,7 +730,7 @@ if(loginForm){
 
                 const response = await fetch(
 
-                    "http://127.0.0.1:8000/login",
+                    "https://hiruibackend.shardweb.app/login",
 
                     {
 
@@ -847,7 +847,7 @@ if (passwordRecoveryForm) {
 
                 const response = await fetch(
 
-                    "http://127.0.0.1:8000/password-recovery/request",
+                    "https://hiruibackend.shardweb.app/password-recovery/request",
 
                     {
 
@@ -934,11 +934,11 @@ function normalizeMenuAvatarUrl(imageUrl) {
     }
 
     if (cleanUrl.startsWith("/manga/")) {
-        return `http://127.0.0.1:8000${cleanUrl}`;
+        return `https://hiruibackend.shardweb.app${cleanUrl}`;
     }
 
     if (cleanUrl.startsWith("manga/")) {
-        return `http://127.0.0.1:8000/${cleanUrl}`;
+        return `https://hiruibackend.shardweb.app/${cleanUrl}`;
     }
 
     return cleanUrl;
@@ -1132,7 +1132,7 @@ async function loadReadingProgressHome(){
     try{
 
         const response = await fetch(
-            `http://127.0.0.1:8000/reading-progress/${loggedUser.id}`
+            `https://hiruibackend.shardweb.app/reading-progress/${loggedUser.id}`
         );
 
         const data = await response.json();
@@ -1228,7 +1228,7 @@ async function loadChapterUnlocks(){
     try{
 
         const response = await fetch(
-            `http://127.0.0.1:8000/unlocks/${loggedUser.id}`
+            `https://hiruibackend.shardweb.app/unlocks/${loggedUser.id}`
         );
 
         const data = await response.json();
