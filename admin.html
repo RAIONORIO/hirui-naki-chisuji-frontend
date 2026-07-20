@@ -488,6 +488,32 @@
 
     const API_URL = "https://hiruibackend.shardweb.app";
 
+    function getAdminToken() {
+
+        return localStorage.getItem("hiruiToken") || "";
+
+    }
+
+    function getAdminAuthHeaders(headers = {}) {
+
+        const token = getAdminToken();
+
+        return {
+            ...headers,
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+        };
+
+    }
+
+    function adminFetch(url, options = {}) {
+
+        return fetch(url, {
+            ...options,
+            headers: getAdminAuthHeaders(options.headers || {})
+        });
+
+    }
+
     const chapterForm = document.getElementById("chapter-form");
     const coverForm = document.getElementById("cover-form");
     const pageForm = document.getElementById("page-form");
@@ -672,7 +698,7 @@ async function uploadAvatarImage(avatarId) {
 
     formData.append("image", image);
 
-    const response = await fetch(`${API_URL}/admin/avatars/${avatarId}/upload`, {
+    const response = await adminFetch(`${API_URL}/admin/avatars/${avatarId}/upload`, {
 
         method: "POST",
 
@@ -698,7 +724,7 @@ async function loadAvatars() {
 
     try {
 
-        const response = await fetch(`${API_URL}/admin/avatars`);
+        const response = await adminFetch(`${API_URL}/admin/avatars`);
 
         const data = await response.json();
 
@@ -849,7 +875,7 @@ async function toggleAvatarActive(avatarId) {
 
     try {
 
-        const response = await fetch(`${API_URL}/admin/avatars/${avatarId}`, {
+        const response = await adminFetch(`${API_URL}/admin/avatars/${avatarId}`, {
 
             method: "PUT",
 
@@ -891,7 +917,7 @@ async function deleteAvatar(avatarId) {
 
     try {
 
-        const response = await fetch(`${API_URL}/admin/avatars/${avatarId}`, {
+        const response = await adminFetch(`${API_URL}/admin/avatars/${avatarId}`, {
 
             method: "DELETE"
 
@@ -1018,7 +1044,7 @@ async function deleteAvatar(avatarId) {
 
         try {
 
-            const response = await fetch(`${API_URL}/admin/chapters`);
+            const response = await adminFetch(`${API_URL}/admin/chapters`);
             const data = await response.json();
 
             if (!data.success) {
@@ -1170,7 +1196,7 @@ async function loadUsers() {
 
     try {
 
-        const response = await fetch(`${API_URL}/admin/users`);
+        const response = await adminFetch(`${API_URL}/admin/users`);
 
         const data = await response.json();
 
@@ -1388,7 +1414,7 @@ async function resetUserPassword(userId, userEmail) {
 
     try {
 
-        const response = await fetch(`${API_URL}/admin/users/${userId}/reset-password`, {
+        const response = await adminFetch(`${API_URL}/admin/users/${userId}/reset-password`, {
 
             method: "PUT",
 
@@ -1435,7 +1461,7 @@ async function deleteUser(userId) {
 
     try {
 
-        const response = await fetch(`${API_URL}/admin/users/${userId}`, {
+        const response = await adminFetch(`${API_URL}/admin/users/${userId}`, {
 
             method: "DELETE"
 
@@ -1469,7 +1495,7 @@ async function blockUser(userId) {
 
     try {
 
-        const response = await fetch(`${API_URL}/admin/users/${userId}/block`, {
+        const response = await adminFetch(`${API_URL}/admin/users/${userId}/block`, {
 
             method: "PUT"
 
@@ -1504,7 +1530,7 @@ async function unblockUser(userId) {
 
     try {
 
-        const response = await fetch(`${API_URL}/admin/users/${userId}/unblock`, {
+        const response = await adminFetch(`${API_URL}/admin/users/${userId}/unblock`, {
 
             method: "PUT"
 
@@ -1538,7 +1564,7 @@ async function loadPasswordRecoveryRequests() {
 
     try {
 
-        const response = await fetch(`${API_URL}/admin/password-recovery-requests`);
+        const response = await adminFetch(`${API_URL}/admin/password-recovery-requests`);
 
         const data = await response.json();
 
@@ -1649,7 +1675,7 @@ async function resolvePasswordRecoveryRequest(requestId) {
 
     try {
 
-        const response = await fetch(`${API_URL}/admin/password-recovery-requests/${requestId}/resolve`, {
+        const response = await adminFetch(`${API_URL}/admin/password-recovery-requests/${requestId}/resolve`, {
 
             method: "PUT",
 
@@ -1714,7 +1740,7 @@ async function resolvePasswordRecoveryRequest(requestId) {
 
         try {
 
-            const response = await fetch(`${API_URL}/admin/chapters/${chapter.id}`, {
+            const response = await adminFetch(`${API_URL}/admin/chapters/${chapter.id}`, {
 
                 method: "PUT",
 
@@ -1780,7 +1806,7 @@ async function resolvePasswordRecoveryRequest(requestId) {
 
         try {
 
-            const response = await fetch(`${API_URL}/admin/chapters/${chapter.id}`, {
+            const response = await adminFetch(`${API_URL}/admin/chapters/${chapter.id}`, {
                 method: "DELETE"
             });
 
@@ -1832,7 +1858,7 @@ async function resolvePasswordRecoveryRequest(requestId) {
 
         try {
 
-            const response = await fetch(`${API_URL}/admin/chapters/${chapterId}/pages`);
+            const response = await adminFetch(`${API_URL}/admin/chapters/${chapterId}/pages`);
             const data = await response.json();
 
             if (!data.success) {
@@ -1940,7 +1966,7 @@ const fileName = getFileNameFromUrl(page.image_url);
 
         try {
 
-            const response = await fetch(`${API_URL}/admin/pages/${pageId}`, {
+            const response = await adminFetch(`${API_URL}/admin/pages/${pageId}`, {
                 method: "DELETE"
             });
 
@@ -1993,7 +2019,7 @@ const fileName = getFileNameFromUrl(page.image_url);
 
         try {
 
-            const response = await fetch(url, {
+            const response = await adminFetch(url, {
 
                 method: method,
 
@@ -2062,7 +2088,7 @@ const fileName = getFileNameFromUrl(page.image_url);
 
         try {
 
-            const response = await fetch(`${API_URL}/admin/chapters/${chapterId}/cover/upload`, {
+            const response = await adminFetch(`${API_URL}/admin/chapters/${chapterId}/cover/upload`, {
 
                 method: "POST",
 
@@ -2115,7 +2141,7 @@ const fileName = getFileNameFromUrl(page.image_url);
 
         try {
 
-            const response = await fetch(`${API_URL}/admin/chapters/${chapterId}/pages/upload`, {
+            const response = await adminFetch(`${API_URL}/admin/chapters/${chapterId}/pages/upload`, {
 
                 method: "POST",
 
@@ -2174,7 +2200,7 @@ const fileName = getFileNameFromUrl(page.image_url);
 
         try {
 
-            const response = await fetch(`${API_URL}/admin/chapters/${chapterId}/pages/bulk-upload`, {
+            const response = await adminFetch(`${API_URL}/admin/chapters/${chapterId}/pages/bulk-upload`, {
 
                 method: "POST",
 
@@ -2240,7 +2266,7 @@ const fileName = getFileNameFromUrl(page.image_url);
 
         try {
 
-            const response = await fetch(url, {
+            const response = await adminFetch(url, {
 
                 method: method,
 

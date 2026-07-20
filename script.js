@@ -769,6 +769,14 @@ if(loginForm){
 
                     );
 
+                    localStorage.setItem(
+
+                        "hiruiToken",
+
+                        data.access_token || ""
+
+                    );
+
                     setTimeout(() => {
 
                         window.location.href =
@@ -1096,6 +1104,10 @@ if (loggedUser && navMenu) {
                         "hiruiUser"
                     );
 
+                    localStorage.removeItem(
+                        "hiruiToken"
+                    );
+
                     window.location.reload();
 
                 }
@@ -1314,8 +1326,6 @@ loadChapterUnlocks();
 // Mostra o link ADMIN apenas para o e-mail autorizado
 // =========================================
 
-const HIRUI_ADMIN_EMAIL = "raionorio0204@admin.com";
-
 function getLoggedUserFromStorage() {
 
     for (let index = 0; index < localStorage.length; index++) {
@@ -1372,7 +1382,9 @@ function isCurrentUserAdmin() {
 
     }
 
-    return user.email.trim().toLowerCase() === HIRUI_ADMIN_EMAIL;
+    const token = localStorage.getItem("hiruiToken");
+
+    return Boolean(user && user.is_admin && token);
 
 }
 

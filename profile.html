@@ -736,6 +736,10 @@
 
                 localStorage.removeItem("hiruiUser");
 
+                localStorage.removeItem(
+                    "hiruiToken"
+                );
+
             }
 
             return null;
@@ -1959,6 +1963,10 @@
             }
 
             localStorage.removeItem("hiruiUser");
+
+                localStorage.removeItem(
+                    "hiruiToken"
+                );
 
             window.location.href = "index.html";
 

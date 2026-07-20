@@ -61,7 +61,31 @@
 
             const HIRUI_API_URL = "https://hiruibackend.shardweb.app";
 
-            const ADMIN_EMAIL = "raionorio0204@admin.com";
+            function getHiruiToken() {
+
+                return localStorage.getItem("hiruiToken") || "";
+
+            }
+
+            function getHiruiAuthHeaders(headers = {}) {
+
+                const token = getHiruiToken();
+
+                return {
+                    ...headers,
+                    ...(token ? { Authorization: `Bearer ${token}` } : {})
+                };
+
+            }
+
+            function hiruiAuthFetch(url, options = {}) {
+
+                return fetch(url, {
+                    ...options,
+                    headers: getHiruiAuthHeaders(options.headers || {})
+                });
+
+            }
 
             const chaptersGrid = document.getElementById("chapters-grid");
 
@@ -115,13 +139,7 @@
 
             function isAdminUser(user) {
 
-                if (!user || !user.email) {
-
-                    return false;
-
-                }
-
-                return user.email.trim().toLowerCase() === ADMIN_EMAIL;
+                return Boolean(user && user.is_admin);
 
             }
 
@@ -294,7 +312,7 @@ function getChapterCover(chapter) {
 
                 try {
 
-                    const response = await fetch(`${HIRUI_API_URL}/admin/chapters`);
+                    const response = await hiruiAuthFetch(`${HIRUI_API_URL}/admin/chapters`);
 
                     const data = await response.json();
 
