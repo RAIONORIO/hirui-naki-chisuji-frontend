@@ -2,6 +2,6 @@ DISPLAY_NAME=hirui-frontend
 DESCRIPTION=Site oficial do manga Hirui Naki Chisuji
 MAIN=index.html
 LANGUAGE=static
-MEMORY=128
+MEMORY=512
 VERSION=latest
 SUBDOMAIN=hirui

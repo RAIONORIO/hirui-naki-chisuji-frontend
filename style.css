@@ -11602,3 +11602,64 @@ body.modal-open {
     font-size: 18px;
     line-height: 1.4;
 }
+
+
+/* =========================================
+   TRILHA SONORA - PLAYER GLOBAL
+========================================= */
+
+.hirui-music-control{
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    z-index:9999;
+    border:1px solid rgba(210, 166, 82, 0.55);
+    border-radius:999px;
+    padding:10px 16px;
+    background:rgba(12, 9, 9, 0.88);
+    color:#f3d18a;
+    font-family:inherit;
+    font-size:0.9rem;
+    letter-spacing:0.04em;
+    cursor:pointer;
+    box-shadow:0 0 18px rgba(0, 0, 0, 0.45);
+    backdrop-filter:blur(6px);
+    transition:transform 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+.hirui-music-control:hover{
+    transform:translateY(-2px);
+    border-color:#f3d18a;
+}
+
+.hirui-music-control.is-playing{
+    color:#fff0b8;
+    border-color:#f3d18a;
+}
+
+.hirui-music-control.needs-interaction{
+    animation:hiruiMusicPulse 1.8s infinite;
+}
+
+@keyframes hiruiMusicPulse{
+    0%{
+        box-shadow:0 0 10px rgba(210, 166, 82, 0.25);
+    }
+
+    50%{
+        box-shadow:0 0 22px rgba(210, 166, 82, 0.55);
+    }
+
+    100%{
+        box-shadow:0 0 10px rgba(210, 166, 82, 0.25);
+    }
+}
+
+@media(max-width:700px){
+    .hirui-music-control{
+        right:12px;
+        bottom:12px;
+        padding:9px 13px;
+        font-size:0.78rem;
+    }
+}
