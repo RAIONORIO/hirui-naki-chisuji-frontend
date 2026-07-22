@@ -136,7 +136,7 @@ async function unlockHiddenFragment(){
 
     }
 
-    window.location.href = "reader.html#cap=0&page=1";
+    window.location.href = "reader.html?fragment=cap0#cap=0&page=1";
 
 }
 
