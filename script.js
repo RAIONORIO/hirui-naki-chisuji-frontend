@@ -7,6 +7,35 @@ const HIRUI_API_BASE =
         ? "http://127.0.0.1:8000"
         : "https://hiruibackend.shardweb.app";
 
+
+function getHiruiAuthHeaders(extraHeaders = {}) {
+
+    const token =
+        localStorage.getItem("hiruiToken");
+
+    if (!token) {
+        return extraHeaders;
+    }
+
+    return {
+        ...extraHeaders,
+        Authorization: `Bearer ${token}`
+    };
+
+}
+
+
+function hiruiAuthFetch(url, options = {}) {
+
+    return fetch(url, {
+        ...options,
+        headers: getHiruiAuthHeaders(options.headers || {})
+    });
+
+}
+
+
+
 let currentPage = 1;
 
 const mangaImage = document.getElementById("manga-image");
@@ -74,9 +103,7 @@ async function unlockHiddenFragment(){
 
     try{
 
-        await fetch(
-
-            `${HIRUI_API_BASE}/unlocks`,
+        await hiruiAuthFetch(`${HIRUI_API_BASE}/unlocks`,
 
             {
 
@@ -141,9 +168,7 @@ async function saveReadingProgress(){
 
     try{
 
-        await fetch(
-
-            `${HIRUI_API_BASE}/reading-progress`,
+        await hiruiAuthFetch(`${HIRUI_API_BASE}/reading-progress`,
 
             {
 
@@ -213,9 +238,7 @@ async function unlockNextChapterIfNeeded(){
 
     try{
 
-        await fetch(
-
-            `${HIRUI_API_BASE}/unlocks`,
+        await hiruiAuthFetch(`${HIRUI_API_BASE}/unlocks`,
 
             {
 
@@ -239,9 +262,7 @@ async function unlockNextChapterIfNeeded(){
 
         );
 
-        const rewardResponse = await fetch(
-
-            `${HIRUI_API_BASE}/users/${loggedUser.id}/chapters/${currentChapter}/finish`,
+        const rewardResponse = await hiruiAuthFetch(`${HIRUI_API_BASE}/users/${loggedUser.id}/chapters/${currentChapter}/finish`,
 
             {
 
@@ -523,8 +544,7 @@ async function canAccessCurrentChapter(){
 
     try{
 
-        const response = await fetch(
-            `${HIRUI_API_BASE}/unlocks/${loggedUser.id}`
+        const response = await hiruiAuthFetch(`${HIRUI_API_BASE}/unlocks/${loggedUser.id}`
         );
 
         const data = await response.json();
@@ -1151,8 +1171,7 @@ async function loadReadingProgressHome(){
 
     try{
 
-        const response = await fetch(
-            `${HIRUI_API_BASE}/reading-progress/${loggedUser.id}`
+        const response = await hiruiAuthFetch(`${HIRUI_API_BASE}/reading-progress/${loggedUser.id}`
         );
 
         const data = await response.json();
@@ -1247,8 +1266,7 @@ async function loadChapterUnlocks(){
 
     try{
 
-        const response = await fetch(
-            `${HIRUI_API_BASE}/unlocks/${loggedUser.id}`
+        const response = await hiruiAuthFetch(`${HIRUI_API_BASE}/unlocks/${loggedUser.id}`
         );
 
         const data = await response.json();

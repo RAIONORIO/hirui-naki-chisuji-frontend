@@ -156,7 +156,7 @@
 
                 try {
 
-                    const response = await fetch(`${HIRUI_API_URL}/unlocks/${user.id}`);
+                    const response = await hiruiAuthFetch(`${HIRUI_API_URL}/unlocks/${user.id}`);
 
                     const data = await response.json();
 
@@ -315,7 +315,7 @@ function getChapterCover(chapter) {
 
                 try {
 
-                    const response = await hiruiAuthFetch(`${HIRUI_API_URL}/admin/chapters`);
+                    const response = await fetch(`${HIRUI_API_URL}/chapters`);
 
                     const data = await response.json();
 

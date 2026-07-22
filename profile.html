@@ -661,6 +661,34 @@
             ? "http://127.0.0.1:8000"
             : "https://hiruibackend.shardweb.app";
 
+
+        function getProfileAuthHeaders(extraHeaders = {}) {
+
+            const token =
+                localStorage.getItem("hiruiToken");
+
+            if (!token) {
+                return extraHeaders;
+            }
+
+            return {
+                ...extraHeaders,
+                Authorization: `Bearer ${token}`
+            };
+
+        }
+
+
+        function profileAuthFetch(url, options = {}) {
+
+            return fetch(url, {
+                ...options,
+                headers: getProfileAuthHeaders(options.headers || {})
+            });
+
+        }
+
+
         const DEFAULT_AVATAR_URL = "assets/avatars/default-avatar.png";
 
         const profileState = {
@@ -1117,7 +1145,7 @@
 
             try {
 
-                const response = await fetch(`${API_URL}/users/${userId}/profile`);
+                const response = await profileAuthFetch(`${API_URL}/users/${userId}/profile`);
 
                 const data = await response.json();
 
@@ -1155,7 +1183,7 @@
 
             try {
 
-                const response = await fetch(`${API_URL}/reading-progress/${userId}`);
+                const response = await profileAuthFetch(`${API_URL}/reading-progress/${userId}`);
 
                 const data = await response.json();
 
@@ -1205,7 +1233,7 @@
 
             try {
 
-                const response = await fetch(`${API_URL}/users/${userId}/avatars`);
+                const response = await profileAuthFetch(`${API_URL}/users/${userId}/avatars`);
 
                 const data = await response.json();
 
@@ -1267,7 +1295,7 @@
 
             try {
 
-                const response = await fetch(`${API_URL}/users/${userId}/outfits`);
+                const response = await profileAuthFetch(`${API_URL}/users/${userId}/outfits`);
 
                 const data = await response.json();
 
@@ -1413,7 +1441,7 @@
 
             try {
 
-                const response = await fetch(`${API_URL}/users/${profileState.user.id}/profile`, {
+                const response = await profileAuthFetch(`${API_URL}/users/${profileState.user.id}/profile`, {
 
                     method: "PUT",
 
@@ -1512,7 +1540,7 @@
 
             try {
 
-                const response = await fetch(`${API_URL}/users/${profileState.user.id}/password`, {
+                const response = await profileAuthFetch(`${API_URL}/users/${profileState.user.id}/password`, {
 
                     method: "PUT",
 
@@ -1841,7 +1869,7 @@
 
             try {
 
-                const response = await fetch(`${API_URL}/users/${profileState.user.id}/avatar`, {
+                const response = await profileAuthFetch(`${API_URL}/users/${profileState.user.id}/avatar`, {
 
                     method: "PUT",
 
@@ -1912,7 +1940,7 @@
 
             try {
 
-                const response = await fetch(`${API_URL}/users/${profileState.user.id}/outfit`, {
+                const response = await profileAuthFetch(`${API_URL}/users/${profileState.user.id}/outfit`, {
 
                     method: "PUT",
 
