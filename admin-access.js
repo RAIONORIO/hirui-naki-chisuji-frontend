@@ -74,7 +74,7 @@ function addAdminLinkToNavbar() {
 
     const adminLink = document.createElement("a");
 
-    adminLink.href = "/admin.html";
+    adminLink.href = "admin.html";
     adminLink.id = "admin-nav-link";
     adminLink.className = "admin-nav-link";
     adminLink.textContent = "ADMIN";
