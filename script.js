@@ -1,3 +1,12 @@
+/* =========================================
+   CONFIGURAÇÃO DA API
+========================================= */
+
+const HIRUI_API_BASE =
+    ["localhost", "127.0.0.1"].includes(window.location.hostname)
+        ? "http://127.0.0.1:8000"
+        : "https://hiruibackend.shardweb.app";
+
 let currentPage = 1;
 
 const mangaImage = document.getElementById("manga-image");
@@ -67,7 +76,7 @@ async function unlockHiddenFragment(){
 
         await fetch(
 
-            "https://hiruibackend.shardweb.app/unlocks",
+            `${HIRUI_API_BASE}/unlocks`,
 
             {
 
@@ -134,7 +143,7 @@ async function saveReadingProgress(){
 
         await fetch(
 
-            "https://hiruibackend.shardweb.app/reading-progress",
+            `${HIRUI_API_BASE}/reading-progress`,
 
             {
 
@@ -206,7 +215,7 @@ async function unlockNextChapterIfNeeded(){
 
         await fetch(
 
-            "https://hiruibackend.shardweb.app/unlocks",
+            `${HIRUI_API_BASE}/unlocks`,
 
             {
 
@@ -232,7 +241,7 @@ async function unlockNextChapterIfNeeded(){
 
         const rewardResponse = await fetch(
 
-            `https://hiruibackend.shardweb.app/users/${loggedUser.id}/chapters/${currentChapter}/finish`,
+            `${HIRUI_API_BASE}/users/${loggedUser.id}/chapters/${currentChapter}/finish`,
 
             {
 
@@ -321,7 +330,7 @@ function normalizeBackendImageUrl(url){
     }
 
     if(url.startsWith("/manga")){
-        return `https://hiruibackend.shardweb.app${url}`;
+        return `${HIRUI_API_BASE}${url}`;
     }
 
     return url;
@@ -337,7 +346,7 @@ async function loadPage(page){
     try{
 
         const response = await fetch(
-            `https://hiruibackend.shardweb.app/chapter/${currentChapter}/page/${page}`
+            `${HIRUI_API_BASE}/chapter/${currentChapter}/page/${page}`
         );
 
         if(!response.ok){
@@ -515,7 +524,7 @@ async function canAccessCurrentChapter(){
     try{
 
         const response = await fetch(
-            `https://hiruibackend.shardweb.app/unlocks/${loggedUser.id}`
+            `${HIRUI_API_BASE}/unlocks/${loggedUser.id}`
         );
 
         const data = await response.json();
@@ -654,7 +663,7 @@ if(registerForm){
 
                 const response = await fetch(
 
-                    "https://hiruibackend.shardweb.app/users",
+                    `${HIRUI_API_BASE}/users`,
 
                     {
 
@@ -730,7 +739,7 @@ if(loginForm){
 
                 const response = await fetch(
 
-                    "https://hiruibackend.shardweb.app/login",
+                    `${HIRUI_API_BASE}/login`,
 
                     {
 
@@ -758,27 +767,7 @@ if(loginForm){
                     data.message;
 
                 if(data.success){
-
-                    localStorage.setItem(
-                        "hiruiMusicEnabled",
-                        "true"
-                    );
-
-                    setTimeout(function(){
-
-                        if(
-                            window.HiruiMusic
-                            &&
-                            typeof window.HiruiMusic.enableOpeningTheme === "function"
-                        ){
-
-                            window.HiruiMusic.enableOpeningTheme();
-
-                        }
-
-                    }, 0);
-
-                    localStorage.setItem(
+localStorage.setItem(
 
                         "hiruiUser",
 
@@ -874,7 +863,7 @@ if (passwordRecoveryForm) {
 
                 const response = await fetch(
 
-                    "https://hiruibackend.shardweb.app/password-recovery/request",
+                    `${HIRUI_API_BASE}/password-recovery/request`,
 
                     {
 
@@ -961,11 +950,11 @@ function normalizeMenuAvatarUrl(imageUrl) {
     }
 
     if (cleanUrl.startsWith("/manga/")) {
-        return `https://hiruibackend.shardweb.app${cleanUrl}`;
+        return `${HIRUI_API_BASE}${cleanUrl}`;
     }
 
     if (cleanUrl.startsWith("manga/")) {
-        return `https://hiruibackend.shardweb.app/${cleanUrl}`;
+        return `${HIRUI_API_BASE}/${cleanUrl}`;
     }
 
     return cleanUrl;
@@ -1163,7 +1152,7 @@ async function loadReadingProgressHome(){
     try{
 
         const response = await fetch(
-            `https://hiruibackend.shardweb.app/reading-progress/${loggedUser.id}`
+            `${HIRUI_API_BASE}/reading-progress/${loggedUser.id}`
         );
 
         const data = await response.json();
@@ -1259,7 +1248,7 @@ async function loadChapterUnlocks(){
     try{
 
         const response = await fetch(
-            `https://hiruibackend.shardweb.app/unlocks/${loggedUser.id}`
+            `${HIRUI_API_BASE}/unlocks/${loggedUser.id}`
         );
 
         const data = await response.json();
@@ -1474,406 +1463,3 @@ document.addEventListener("DOMContentLoaded", function () {
     protectAdminPage();
 
 });
-
-
-/* =========================================
-   TRILHA SONORA GLOBAL
-========================================= */
-
-(function(){
-
-    const OPENING_THEME_SRC =
-        "assets/music/opening-theme.mp3";
-
-    const MUSIC_ENABLED_KEY =
-        "hiruiMusicEnabled";
-
-    const MUSIC_TIME_KEY =
-        "hiruiOpeningThemeCurrentTime";
-
-    const MUSIC_VOLUME_KEY =
-        "hiruiMusicVolume";
-
-    let hiruiAudio =
-        null;
-
-    let musicControl =
-        null;
-
-    function isUserLoggedIn(){
-
-        return Boolean(
-            localStorage.getItem("hiruiUser")
-        );
-
-    }
-
-    function getSavedVolume(){
-
-        const savedVolume =
-            Number(
-                localStorage.getItem(MUSIC_VOLUME_KEY)
-            );
-
-        if(Number.isFinite(savedVolume)){
-
-            return Math.min(
-                Math.max(savedVolume, 0),
-                1
-            );
-
-        }
-
-        return 0.35;
-
-    }
-
-    function getSavedTime(){
-
-        const savedTime =
-            Number(
-                localStorage.getItem(MUSIC_TIME_KEY)
-            );
-
-        if(Number.isFinite(savedTime) && savedTime > 0){
-
-            return savedTime;
-
-        }
-
-        return 0;
-
-    }
-
-    function ensureAudio(){
-
-        if(hiruiAudio){
-
-            return hiruiAudio;
-
-        }
-
-        hiruiAudio =
-            document.createElement("audio");
-
-        hiruiAudio.id =
-            "hirui-opening-theme";
-
-        hiruiAudio.src =
-            OPENING_THEME_SRC;
-
-        hiruiAudio.loop =
-            true;
-
-        hiruiAudio.preload =
-            "auto";
-
-        hiruiAudio.volume =
-            getSavedVolume();
-
-        hiruiAudio.addEventListener(
-            "timeupdate",
-            function(){
-
-                if(!hiruiAudio.paused){
-
-                    localStorage.setItem(
-                        MUSIC_TIME_KEY,
-                        String(hiruiAudio.currentTime)
-                    );
-
-                }
-
-            }
-        );
-
-        document.body.appendChild(
-            hiruiAudio
-        );
-
-        return hiruiAudio;
-
-    }
-
-    function updateMusicControl(){
-
-        if(!musicControl){
-
-            return;
-
-        }
-
-        const enabled =
-            localStorage.getItem(MUSIC_ENABLED_KEY) === "true";
-
-        const isPlaying =
-            hiruiAudio && !hiruiAudio.paused;
-
-        if(enabled && isPlaying){
-
-            musicControl.textContent =
-                "♪ Trilha: ON";
-
-            musicControl.classList.add(
-                "is-playing"
-            );
-
-            musicControl.classList.remove(
-                "needs-interaction"
-            );
-
-            return;
-
-        }
-
-        if(enabled){
-
-            musicControl.textContent =
-                "♪ Ativar trilha";
-
-            musicControl.classList.remove(
-                "is-playing"
-            );
-
-            musicControl.classList.add(
-                "needs-interaction"
-            );
-
-            return;
-
-        }
-
-        musicControl.textContent =
-            "♪ Trilha: OFF";
-
-        musicControl.classList.remove(
-            "is-playing",
-            "needs-interaction"
-        );
-
-    }
-
-    function ensureMusicControl(){
-
-        if(musicControl || !isUserLoggedIn()){
-
-            return musicControl;
-
-        }
-
-        musicControl =
-            document.createElement("button");
-
-        musicControl.type =
-            "button";
-
-        musicControl.id =
-            "hirui-music-control";
-
-        musicControl.className =
-            "hirui-music-control";
-
-        musicControl.setAttribute(
-            "aria-label",
-            "Controlar trilha sonora"
-        );
-
-        musicControl.addEventListener(
-            "click",
-            function(){
-
-                const enabled =
-                    localStorage.getItem(MUSIC_ENABLED_KEY) === "true";
-
-                if(enabled && hiruiAudio && !hiruiAudio.paused){
-
-                    pauseOpeningTheme();
-
-                    return;
-
-                }
-
-                enableOpeningTheme();
-
-            }
-        );
-
-        document.body.appendChild(
-            musicControl
-        );
-
-        updateMusicControl();
-
-        return musicControl;
-
-    }
-
-    async function playOpeningTheme(){
-
-        if(!isUserLoggedIn()){
-
-            return;
-
-        }
-
-        const audio =
-            ensureAudio();
-
-        ensureMusicControl();
-
-        const savedTime =
-            getSavedTime();
-
-        if(savedTime){
-
-            try{
-
-                audio.currentTime =
-                    savedTime;
-
-            }catch(error){
-
-                console.log(
-                    "Não foi possível restaurar o tempo da trilha:",
-                    error
-                );
-
-            }
-
-        }
-
-        try{
-
-            await audio.play();
-
-            localStorage.setItem(
-                MUSIC_ENABLED_KEY,
-                "true"
-            );
-
-        }catch(error){
-
-            console.log(
-                "O navegador bloqueou a reprodução automática da trilha:",
-                error
-            );
-
-        }
-
-        updateMusicControl();
-
-    }
-
-    function enableOpeningTheme(){
-
-        localStorage.setItem(
-            MUSIC_ENABLED_KEY,
-            "true"
-        );
-
-        return playOpeningTheme();
-
-    }
-
-    function pauseOpeningTheme(){
-
-        localStorage.setItem(
-            MUSIC_ENABLED_KEY,
-            "false"
-        );
-
-        if(hiruiAudio){
-
-            hiruiAudio.pause();
-
-        }
-
-        updateMusicControl();
-
-    }
-
-    function disableOpeningTheme(){
-
-        localStorage.removeItem(
-            MUSIC_ENABLED_KEY
-        );
-
-        localStorage.removeItem(
-            MUSIC_TIME_KEY
-        );
-
-        if(hiruiAudio){
-
-            hiruiAudio.pause();
-
-            hiruiAudio.currentTime =
-                0;
-
-        }
-
-        updateMusicControl();
-
-    }
-
-    window.HiruiMusic = {
-
-        enableOpeningTheme,
-        pauseOpeningTheme,
-        disableOpeningTheme
-
-    };
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function(){
-
-            ensureMusicControl();
-
-            if(
-                isUserLoggedIn()
-                &&
-                localStorage.getItem(MUSIC_ENABLED_KEY) === "true"
-            ){
-
-                playOpeningTheme();
-
-            }
-
-        }
-    );
-
-    document.addEventListener(
-        "click",
-        function(event){
-
-            if(
-                event.target.closest
-                &&
-                event.target.closest("#logout-btn, #profile-logout, .logout-btn")
-            ){
-
-                disableOpeningTheme();
-
-            }
-
-        },
-        true
-    );
-
-    window.addEventListener(
-        "beforeunload",
-        function(){
-
-            if(hiruiAudio && !hiruiAudio.paused){
-
-                localStorage.setItem(
-                    MUSIC_TIME_KEY,
-                    String(hiruiAudio.currentTime)
-                );
-
-            }
-
-        }
-    );
-
-})();

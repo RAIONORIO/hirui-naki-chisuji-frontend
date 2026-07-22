@@ -207,6 +207,119 @@
     <script src="script.js"></script>
 <script src="admin-access.js"></script>
 
+
+<!-- HIRUI HOME MUSIC DIRECT START -->
+<audio
+    id="home-opening-theme"
+    src="assets/music/opening-theme.mp3"
+    preload="auto"
+    loop
+></audio>
+
+<button
+    type="button"
+    id="home-music-button"
+    class="hirui-music-control needs-interaction"
+    hidden
+>
+    ♪ Ativar trilha
+</button>
+
+<script>
+(function(){
+
+    const audio =
+        document.getElementById("home-opening-theme");
+
+    const button =
+        document.getElementById("home-music-button");
+
+    if(!audio || !button){
+        return;
+    }
+
+    const loggedUser =
+        localStorage.getItem("hiruiUser");
+
+    if(!loggedUser){
+        button.hidden = true;
+        return;
+    }
+
+    button.hidden = false;
+
+    audio.volume = 0.65;
+
+    function isPlaying(){
+        return !audio.paused && !audio.ended;
+    }
+
+    function updateButton(){
+
+        if(isPlaying()){
+
+            button.textContent =
+                "♪ Trilha: ON";
+
+            button.classList.add("is-playing");
+
+            button.classList.remove("needs-interaction");
+
+            return;
+
+        }
+
+        button.textContent =
+            "♪ Ativar trilha";
+
+        button.classList.remove("is-playing");
+
+        button.classList.add("needs-interaction");
+
+    }
+
+    button.addEventListener("click", async function(){
+
+        if(isPlaying()){
+
+            audio.pause();
+
+            updateButton();
+
+            return;
+
+        }
+
+        try{
+
+            await audio.play();
+
+        }catch(error){
+
+            console.log(
+                "Não foi possível tocar a trilha:",
+                error
+            );
+
+        }
+
+        updateButton();
+
+    });
+
+    audio.addEventListener("play", updateButton);
+
+    audio.addEventListener("pause", updateButton);
+
+    audio.addEventListener("ended", updateButton);
+
+    updateButton();
+
+})();
+</script>
+<!-- HIRUI HOME MUSIC DIRECT END -->
+
+
 </body>
 
 </html>
