@@ -96,7 +96,7 @@ function protectAdminPage() {
     if (!isCurrentUserAdmin()) {
 
         alert("Acesso restrito ao administrador.");
-        window.location.href = "/";
+        window.location.href = "index.html";
 
     }
 
