@@ -11748,3 +11748,167 @@ body.modal-open {
         font-size: 0.85rem;
     }
 }
+
+
+
+/* =========================================
+   AJUSTE FINAL - LEITOR MOBILE E CAPÍTULOS
+========================================= */
+
+.reader-topbar {
+    flex-wrap: nowrap;
+}
+
+.reader-page-jump {
+    width: auto;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 8px;
+    background: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.reader-page-jump label {
+    margin: 0;
+    white-space: nowrap;
+    color: #ffffff;
+    font-size: 0.72rem;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    font-weight: 800;
+}
+
+.reader-page-jump input {
+    width: 48px;
+    height: 34px;
+    padding: 0 4px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 0;
+    outline: none;
+    background: #050505;
+    color: #ffffff;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+.reader-page-jump input:focus {
+    border-color: #b00000;
+}
+
+.reader-page-jump button {
+    height: 34px;
+    min-width: 38px;
+    padding: 0 8px;
+    border: 0;
+    background: #8b0000;
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+}
+
+.chapters-home-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin-bottom: 34px;
+    padding: 14px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: #090909;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    transition: 0.25s ease;
+}
+
+.chapters-home-link:hover {
+    background: #8b0000;
+    border-color: #8b0000;
+}
+
+@media (max-width: 768px) {
+    .reader-topbar {
+        justify-content: center;
+        gap: 5px;
+        padding: 8px 4px;
+    }
+
+    .reader-icon-button,
+    .reader-page-button {
+        width: 43px;
+        height: 43px;
+        font-size: 22px;
+    }
+
+    .reader-page-jump {
+        width: auto;
+        height: 43px;
+        flex: 0 0 auto;
+        gap: 4px;
+        padding: 0 5px;
+    }
+
+    .reader-page-jump label {
+        display: none;
+    }
+
+    .reader-page-jump input {
+        width: 42px;
+        height: 31px;
+        font-size: 0.86rem;
+    }
+
+    .reader-page-jump button {
+        height: 31px;
+        min-width: 34px;
+        padding: 0 7px;
+        font-size: 0.68rem;
+    }
+
+    .reader-message {
+        top: 76px;
+        font-size: 0.82rem;
+    }
+
+    .chapters-page {
+        padding-top: 110px;
+    }
+
+    .chapters-home-link {
+        width: 100%;
+        margin-bottom: 28px;
+        padding: 13px 14px;
+        font-size: 0.78rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .reader-icon-button,
+    .reader-page-button {
+        width: 39px;
+        height: 39px;
+        font-size: 20px;
+    }
+
+    .reader-page-jump {
+        height: 39px;
+    }
+
+    .reader-page-jump input {
+        width: 38px;
+        height: 28px;
+    }
+
+    .reader-page-jump button {
+        height: 28px;
+        min-width: 30px;
+        padding: 0 6px;
+    }
+}
