@@ -309,7 +309,7 @@ async function unlockNextChapterIfNeeded(){
 
     if(unlockedRewardNames.length > 0){
 
-        alert(
+        showReaderMessage(
             `Nova recompensa desbloqueada: ${unlockedRewardNames.join(", ")}`
         );
 
@@ -329,6 +329,41 @@ async function unlockNextChapterIfNeeded(){
         );
 
     }
+
+}
+
+
+let readerMessageTimeout = null;
+
+function showReaderMessage(message){
+
+    const messageBox =
+        document.getElementById("reader-message");
+
+    if(!messageBox){
+
+        console.log(message);
+
+        return;
+
+    }
+
+    messageBox.textContent =
+        message;
+
+    messageBox.classList.add("active");
+
+    if(readerMessageTimeout){
+
+        clearTimeout(readerMessageTimeout);
+
+    }
+
+    readerMessageTimeout = setTimeout(() => {
+
+        messageBox.classList.remove("active");
+
+    }, 4500);
 
 }
 
@@ -420,6 +455,8 @@ async function loadPage(page){
 
             saveReadingProgress();
 
+            updateReaderPageInput();
+
             window.scrollTo({
 
                 top: 0,
@@ -493,6 +530,59 @@ function showChapterFinished(){
         };
 
     }
+
+}
+
+
+function updateReaderPageInput(){
+
+    const pageInput =
+        document.getElementById("reader-page-input");
+
+    if(!pageInput){
+
+        return;
+
+    }
+
+    pageInput.value =
+        currentPage;
+
+}
+
+function goToReaderPage(){
+
+    const pageInput =
+        document.getElementById("reader-page-input");
+
+    if(!pageInput){
+
+        return;
+
+    }
+
+    const pageNumber =
+        Number(pageInput.value);
+
+    if(
+        !Number.isInteger(pageNumber)
+        ||
+        pageNumber < 1
+    ){
+
+        showReaderMessage("Informe uma página válida.");
+
+        return;
+
+    }
+
+    currentPage =
+        pageNumber;
+
+    window.location.hash =
+        `cap=${currentChapter}&page=${currentPage}`;
+
+    loadPage(currentPage);
 
 }
 

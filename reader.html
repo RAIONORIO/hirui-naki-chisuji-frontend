@@ -36,7 +36,32 @@
             ☰
         </a>
 
+        <div class="reader-page-jump" aria-label="Ir para página específica">
+
+            <label for="reader-page-input">PÁGINA</label>
+
+            <input
+                type="number"
+                id="reader-page-input"
+                min="1"
+                value="1"
+                inputmode="numeric"
+                onkeydown="if(event.key === 'Enter'){ goToReaderPage(); }"
+            >
+
+            <button type="button" onclick="goToReaderPage()">
+                IR
+            </button>
+
+        </div>
+
     </header>
+
+    <div
+        id="reader-message"
+        class="reader-message"
+        aria-live="polite"
+    ></div>
 
     <!-- =========================================
          LEITOR
@@ -102,7 +127,7 @@
 
     </main>
 
-    <script src="script.js?v=23"></script>
+    <script src="script.js?v=24"></script>
 
 </body>
 
