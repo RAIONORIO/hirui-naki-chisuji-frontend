@@ -457,6 +457,8 @@ async function loadPage(page){
 
             updateReaderPageInput();
 
+            syncReaderPageInputLimit();
+
             window.scrollTo({
 
                 top: 0,
@@ -507,6 +509,8 @@ function showChapterFinished(){
 
     finishedBox.classList.add("active");
 
+    syncReaderPageInputLimit();
+
     if(hiddenFragment){
 
         hiddenFragment.style.display =
@@ -525,7 +529,7 @@ function showChapterFinished(){
                 currentChapter + 1;
 
             window.location.href =
-                `reader.html#cap=${nextChapter}`;
+                `reader.html?goto=${Date.now()}#cap=${nextChapter}&page=1`;
 
         };
 
@@ -533,6 +537,131 @@ function showChapterFinished(){
 
 }
 
+
+
+const READER_CHAPTER_PAGE_LIMIT_FALLBACK = {
+    0: 40,
+    1: 38,
+    2: 40,
+    3: 23,
+    4: 19,
+    5: 1
+};
+
+const readerChapterPageLimitCache = {};
+
+function getReaderApiBase(){
+
+    if(typeof HIRUI_API_BASE !== "undefined"){
+
+        return HIRUI_API_BASE;
+
+    }
+
+    if(
+        window.location.hostname === "127.0.0.1"
+        ||
+        window.location.hostname === "localhost"
+    ){
+
+        return "http://127.0.0.1:8000";
+
+    }
+
+    return "https://hiruibackend.shardweb.app";
+
+}
+
+async function getReaderChapterPageLimit(chapterNumber){
+
+    if(readerChapterPageLimitCache[chapterNumber]){
+
+        return readerChapterPageLimitCache[chapterNumber];
+
+    }
+
+    try{
+
+        const response =
+            await fetch(`${getReaderApiBase()}/chapters/${chapterNumber}/pages`);
+
+        const data =
+            await response.json();
+
+        if(
+            data.success
+            &&
+            Array.isArray(data.pages)
+            &&
+            data.pages.length > 0
+        ){
+
+            const pageLimit =
+                Math.max(
+                    ...data.pages.map((page) => Number(page.page_number))
+                );
+
+            readerChapterPageLimitCache[chapterNumber] =
+                pageLimit;
+
+            return pageLimit;
+
+        }
+
+    }catch(error){
+
+        console.log(
+            "Erro ao buscar limite de páginas:",
+            error
+        );
+
+    }
+
+    const fallbackLimit =
+        READER_CHAPTER_PAGE_LIMIT_FALLBACK[chapterNumber];
+
+    if(fallbackLimit){
+
+        readerChapterPageLimitCache[chapterNumber] =
+            fallbackLimit;
+
+        return fallbackLimit;
+
+    }
+
+    return null;
+
+}
+
+async function syncReaderPageInputLimit(){
+
+    const pageInput =
+        document.getElementById("reader-page-input");
+
+    if(!pageInput){
+
+        return;
+
+    }
+
+    const pageLimit =
+        await getReaderChapterPageLimit(currentChapter);
+
+    if(pageLimit){
+
+        pageInput.max =
+            String(pageLimit);
+
+        if(Number(pageInput.value) > pageLimit){
+
+            pageInput.value =
+                String(pageLimit);
+
+        }
+
+    }
+
+}
 
 function updateReaderPageInput(){
 
@@ -545,12 +674,32 @@ function updateReaderPageInput(){
 
     }
 
+    const pageLimit =
+        readerChapterPageLimitCache[currentChapter]
+        ||
+        READER_CHAPTER_PAGE_LIMIT_FALLBACK[currentChapter];
+
+    if(pageLimit){
+
+        pageInput.max =
+            String(pageLimit);
+
+        pageInput.title =
+            `Este capítulo tem ${pageLimit} páginas.`;
+
+        pageInput.value =
+            String(Math.min(currentPage, pageLimit));
+
+        return;
+
+    }
+
     pageInput.value =
         currentPage;
 
 }
 
-function goToReaderPage(){
+async function goToReaderPage(){
 
     const pageInput =
         document.getElementById("reader-page-input");
@@ -576,6 +725,22 @@ function goToReaderPage(){
 
     }
 
+    const pageLimit =
+        await getReaderChapterPageLimit(currentChapter);
+
+    if(pageLimit && pageNumber > pageLimit){
+
+        pageInput.value =
+            String(pageLimit);
+
+        showReaderMessage(
+            `Este capítulo tem ${pageLimit} páginas.`
+        );
+
+        return;
+
+    }
+
     currentPage =
         pageNumber;
 
@@ -590,7 +755,25 @@ function goToReaderPage(){
    PRÓXIMA PÁGINA
 ========================================= */
 
-function nextPage(){
+async function nextPage(){
+
+    const pageLimit =
+        await getReaderChapterPageLimit(currentChapter);
+
+    if(pageLimit && currentPage >= pageLimit){
+
+        currentPage =
+            pageLimit;
+
+        updateReaderPageInput();
+
+        await unlockNextChapterIfNeeded();
+
+        showChapterFinished();
+
+        return;
+
+    }
 
     currentPage++;
 

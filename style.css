@@ -11912,3 +11912,138 @@ body.modal-open {
         padding: 0 6px;
     }
 }
+
+
+
+/* =========================================
+   AJUSTE FINAL - LEITOR, LIMITE DE PÁGINA E HOME
+========================================= */
+
+.reader-page-jump {
+    width: auto !important;
+    height: 43px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 0 6px !important;
+    background: #090909 !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+
+.reader-page-jump label {
+    display: none !important;
+}
+
+.reader-page-jump input {
+    width: 46px !important;
+    height: 31px !important;
+    padding: 0 4px !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    background: #050505 !important;
+    color: #ffffff !important;
+    text-align: center !important;
+    font-size: 0.9rem !important;
+    font-weight: 900 !important;
+    box-sizing: border-box !important;
+}
+
+.reader-page-jump input:focus {
+    border-color: #b00000 !important;
+}
+
+.reader-page-jump button {
+    height: 31px !important;
+    min-width: 38px !important;
+    padding: 0 8px !important;
+    border: 0 !important;
+    background: #a00000 !important;
+    color: #ffffff !important;
+    font-size: 0.72rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.08em !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+}
+
+.reader-message {
+    top: 76px !important;
+}
+
+.chapters-home-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: fit-content !important;
+    margin: 0 0 34px 0 !important;
+    padding: 14px 20px !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    background: #090909 !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    font-size: 0.82rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.14em !important;
+    transition: 0.25s ease !important;
+}
+
+.chapters-home-link:hover {
+    background: #8b0000 !important;
+    border-color: #8b0000 !important;
+}
+
+@media (max-width: 768px) {
+    .reader-topbar {
+        justify-content: center !important;
+        gap: 5px !important;
+        padding: 8px 4px !important;
+        flex-wrap: nowrap !important;
+    }
+
+    .reader-icon-button,
+    .reader-page-button {
+        width: 43px !important;
+        height: 43px !important;
+        font-size: 22px !important;
+    }
+
+    .reader-page-jump {
+        flex: 0 0 auto !important;
+    }
+
+    .chapters-page {
+        padding-top: 110px !important;
+    }
+
+    .chapters-home-link {
+        width: 100% !important;
+        margin-bottom: 28px !important;
+        padding: 13px 14px !important;
+        font-size: 0.78rem !important;
+    }
+}
+
+@media (max-width: 380px) {
+    .reader-icon-button,
+    .reader-page-button {
+        width: 39px !important;
+        height: 39px !important;
+        font-size: 20px !important;
+    }
+
+    .reader-page-jump {
+        height: 39px !important;
+    }
+
+    .reader-page-jump input {
+        width: 40px !important;
+        height: 28px !important;
+    }
+
+    .reader-page-jump button {
+        height: 28px !important;
+        min-width: 32px !important;
+        padding: 0 6px !important;
+    }
+}
