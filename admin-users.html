@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Gerenciar Usuários | Hirui Admin</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css?v=28"
+    >
+
+    <link
+        rel="stylesheet"
+        href="admin-layout.css?v=3"
+    >
+
+</head>
+
+<body>
+
+    <header class="admin-header">
+
+        <h1>HIRUI ADMIN</h1>
+
+        <nav
+            class="admin-header-links"
+            aria-label="Navegação administrativa"
+        >
+
+            <a href="admin.html">
+                VOLTAR AO PAINEL
+            </a>
+
+            <a href="index.html">
+                VOLTAR AO SITE
+            </a>
+
+        </nav>
+
+    </header>
+
+    <main class="admin-page admin-module-page">
+
+        <section class="admin-intro">
+
+            <span>GERENCIAMENTO DE LEITORES</span>
+
+            <h2>USUÁRIOS</h2>
+
+            <p>
+                Aprove novos cadastros, bloqueie acessos, redefina senhas temporárias ou exclua contas.
+            </p>
+
+        </section>
+
+        <section class="admin-grid">
+
+            <div class="admin-card admin-card-large">
+
+                <div class="admin-card-header">
+
+                    <h3>USUÁRIOS CADASTRADOS</h3>
+
+                    <button
+                        type="button"
+                        id="refresh-users-button"
+                        class="admin-small-button"
+                    >
+                        ATUALIZAR USUÁRIOS
+                    </button>
+
+                </div>
+
+                <form
+                    id="user-search-form"
+                    class="admin-user-search-form"
+                    role="search"
+                >
+
+                    <div class="admin-user-search-field">
+
+                        <span
+                            class="admin-user-search-field-icon"
+                            aria-hidden="true"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="m20 20-3.5-3.5"></path>
+                            </svg>
+                        </span>
+
+                        <input
+                            type="search"
+                            id="user-search-input"
+                            placeholder="Pesquisar por nome, apelido, e-mail, telefone ou ID"
+                            autocomplete="off"
+                            aria-label="Pesquisar usuários cadastrados"
+                        >
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        id="user-search-button"
+                        class="admin-small-button admin-user-search-button"
+                    >
+                        PROCURAR
+                    </button>
+
+                </form>
+
+                <p class="admin-help-text">
+                    Novos cadastros entram como aguardando aprovação.
+                    Use APROVAR ACESSO apenas para leitores autorizados.
+                </p>
+
+                <div
+                    id="user-list"
+                    class="user-list"
+                    style="margin-top: 18px;"
+                ></div>
+
+                <div
+                    id="user-search-empty"
+                    class="admin-empty-state"
+                    style="display: none; margin-top: 18px;"
+                >
+                    Nenhum usuário encontrado para esta pesquisa.
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="admin-access.js?v=2"></script>
+    <script src="admin.js?v=2"></script>
+    <script src="admin-users.js?v=3"></script>
+
+</body>
+
+</html>

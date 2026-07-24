@@ -1,38 +1,49 @@
 // =========================================
 // ADMIN ACCESS
-// Mostra o link ADMIN apenas para o e-mail autorizado
+// Exibe o link ADMIN e protege todas as
+// páginas administrativas.
 // =========================================
+
+const HIRUI_ADMIN_EMAIL = "raionorio0204@admin.com";
 
 function getLoggedUserFromStorage() {
 
-    for (let index = 0; index < localStorage.length; index++) {
+    const storedUser =
+        localStorage.getItem("hiruiUser");
 
-        const key = localStorage.key(index);
-        const value = localStorage.getItem(key);
+    if (!storedUser) {
+        return null;
+    }
 
-        if (!value) {
-            continue;
-        }
+    try {
 
-        try {
+        const parsedValue =
+            JSON.parse(storedUser);
 
-            const parsedValue = JSON.parse(value);
+        if (
+            parsedValue
+            && typeof parsedValue === "object"
+        ) {
 
-            if (parsedValue && typeof parsedValue === "object") {
-
-                if (parsedValue.email) {
-                    return parsedValue;
-                }
-
-                if (parsedValue.user && parsedValue.user.email) {
-                    return parsedValue.user;
-                }
-
+            if (parsedValue.email) {
+                return parsedValue;
             }
 
-        } catch (error) {
-            continue;
+            if (
+                parsedValue.user
+                && parsedValue.user.email
+            ) {
+                return parsedValue.user;
+            }
+
         }
+
+    } catch (error) {
+
+        console.log(
+            "Não foi possível interpretar o usuário salvo.",
+            error
+        );
 
     }
 
@@ -42,29 +53,42 @@ function getLoggedUserFromStorage() {
 
 function isCurrentUserAdmin() {
 
-    const user = getLoggedUserFromStorage();
+    const user =
+        getLoggedUserFromStorage();
 
-    if (!user || !user.email) {
+    const token =
+        localStorage.getItem("hiruiToken");
+
+    if (
+        !user
+        || !user.email
+        || !token
+    ) {
         return false;
     }
 
-    const token = localStorage.getItem("hiruiToken");
-
-    return Boolean(user && user.is_admin && token);
+    return (
+        user.email.trim().toLowerCase()
+        === HIRUI_ADMIN_EMAIL
+    );
 
 }
 
 function addAdminLinkToNavbar() {
 
-    const navMenu = document.getElementById("nav-menu") || document.querySelector(".navbar nav");
+    const navMenu =
+        document.getElementById("nav-menu")
+        || document.querySelector(".navbar nav");
 
     if (!navMenu) {
         return;
     }
 
-    const existingAdminLink = document.getElementById("admin-nav-link");
-
-    if (existingAdminLink) {
+    if (
+        document.getElementById(
+            "admin-nav-link"
+        )
+    ) {
         return;
     }
 
@@ -72,39 +96,74 @@ function addAdminLinkToNavbar() {
         return;
     }
 
-    const adminLink = document.createElement("a");
+    const adminLink =
+        document.createElement("a");
 
-    adminLink.href = "admin.html";
-    adminLink.id = "admin-nav-link";
-    adminLink.className = "admin-nav-link";
-    adminLink.textContent = "ADMIN";
+    adminLink.href =
+        "admin.html";
 
-    navMenu.appendChild(adminLink);
+    adminLink.id =
+        "admin-nav-link";
+
+    adminLink.className =
+        "admin-nav-link";
+
+    adminLink.textContent =
+        "ADMIN";
+
+    navMenu.appendChild(
+        adminLink
+    );
+
+}
+
+function isAdminPage() {
+
+    const currentPath =
+        window.location.pathname.toLowerCase();
+
+    const currentFile =
+        currentPath.split("/").pop();
+
+    return (
+        currentPath.endsWith("/admin")
+        || currentFile === "admin"
+        || currentFile === "admin.html"
+        || (
+            currentFile
+            && currentFile.startsWith("admin-")
+            && currentFile.endsWith(".html")
+        )
+    );
 
 }
 
 function protectAdminPage() {
 
-    const currentPage = window.location.pathname.toLowerCase();
-
-    const isAdminPage = currentPage.endsWith("admin.html") || currentPage.endsWith("/admin");
-
-    if (!isAdminPage) {
+    if (!isAdminPage()) {
         return;
     }
 
-    if (!isCurrentUserAdmin()) {
-
-        alert("Acesso restrito ao administrador.");
-        window.location.href = "index.html";
-
+    if (isCurrentUserAdmin()) {
+        return;
     }
+
+    alert(
+        "Acesso restrito ao administrador."
+    );
+
+    window.location.href =
+        "index.html";
 
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+protectAdminPage();
 
-    addAdminLinkToNavbar();
-    protectAdminPage();
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-});
+        addAdminLinkToNavbar();
+
+    }
+);

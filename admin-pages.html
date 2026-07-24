@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Gerenciar Páginas | Hirui Admin</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css?v=28"
+    >
+
+    <link
+        rel="stylesheet"
+        href="admin-layout.css?v=1"
+    >
+
+</head>
+
+<body>
+
+    <header class="admin-header">
+
+        <h1>HIRUI ADMIN</h1>
+
+        <nav
+            class="admin-header-links"
+            aria-label="Navegação administrativa"
+        >
+
+            <a href="admin.html">
+                VOLTAR AO PAINEL
+            </a>
+
+            <a href="index.html">
+                VOLTAR AO SITE
+            </a>
+
+        </nav>
+
+    </header>
+
+    <main class="admin-page admin-module-page">
+
+        <section class="admin-intro">
+
+            <span>GERENCIAMENTO DO LEITOR</span>
+
+            <h2>PÁGINAS DO MANGÁ</h2>
+
+            <p>
+                Envie uma página, envie um capítulo completo ou selecione um capítulo para consultar e excluir páginas cadastradas.
+            </p>
+
+        </section>
+
+        <section class="admin-grid">
+
+
+            <div class="admin-card">
+
+                <h3>ENVIAR PÁGINA</h3>
+
+                <form
+                    id="page-form"
+                    class="admin-form"
+                >
+
+                    <select
+                        id="page-chapter"
+                        required
+                    >
+
+                        <option value="">
+                            Selecione o capítulo
+                        </option>
+
+                    </select>
+
+                    <input
+                        type="number"
+                        id="page-number"
+                        placeholder="Número da página"
+                        min="1"
+                        required
+                    >
+
+                    <input
+                        type="file"
+                        id="page-image"
+                        accept="image/jpeg,image/png,image/webp"
+                        required
+                    >
+
+                    <button type="submit">
+                        ENVIAR PÁGINA
+                    </button>
+
+                </form>
+
+                <div
+                    id="page-message"
+                    class="admin-message"
+                ></div>
+
+            </div>
+
+            <div class="admin-card">
+
+                <h3>ENVIAR CAPÍTULO COMPLETO</h3>
+
+                <form
+                    id="bulk-page-form"
+                    class="admin-form"
+                >
+
+                    <select
+                        id="bulk-page-chapter"
+                        required
+                    >
+
+                        <option value="">
+                            Selecione o capítulo
+                        </option>
+
+                    </select>
+
+                    <input
+                        type="file"
+                        id="bulk-page-images"
+                        accept="image/jpeg,image/png,image/webp"
+                        multiple
+                        required
+                    >
+
+                    <p class="admin-help-text">
+                        Envie todas as páginas de uma vez. Os arquivos
+                        precisam estar nomeados em ordem: 1.jpg, 2.jpg,
+                        3.jpg ou 01.jpg, 02.jpg, 03.jpg.
+                    </p>
+
+                    <button type="submit">
+                        ENVIAR CAPÍTULO COMPLETO
+                    </button>
+
+                </form>
+
+                <div
+                    id="bulk-page-message"
+                    class="admin-message"
+                ></div>
+
+            </div>
+
+            <div class="admin-card admin-card-large">
+
+                <div class="admin-card-header">
+
+                    <div>
+
+                        <h3>GERENCIAR PÁGINAS</h3>
+
+                        <p
+                            id="selected-chapter-title"
+                            class="admin-panel-subtitle"
+                        >
+                            Selecione um capítulo para listar suas páginas.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="refresh-pages-button"
+                        class="admin-small-button"
+                    >
+                        ATUALIZAR PÁGINAS
+                    </button>
+
+                </div>
+
+                <div class="admin-module-select-line">
+
+                    <select id="pages-list-chapter">
+
+                        <option value="">
+                            Selecione o capítulo
+                        </option>
+
+                    </select>
+
+                    <button
+                        type="button"
+                        id="load-pages-button"
+                        class="admin-small-button"
+                    >
+                        CARREGAR PÁGINAS
+                    </button>
+
+                </div>
+
+                <div
+                    id="pages-panel"
+                    style="display: none;"
+                >
+
+                    <div
+                        id="chapter-pages-list"
+                        class="chapter-pages-list"
+                        style="margin-top: 18px;"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+    <script src="admin-access.js?v=2"></script>
+    <script src="admin.js?v=2"></script>
+    <script src="admin-pages.js?v=1"></script>
+
+</body>
+
+</html>
