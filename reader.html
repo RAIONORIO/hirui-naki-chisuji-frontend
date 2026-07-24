@@ -8,7 +8,7 @@
 
     <title>Leitor | Hirui Naki Chisuji</title>
 
-    <link rel="stylesheet" href="style.css?v=26">
+    <link rel="stylesheet" href="style.css?v=27">
 
 </head>
 
@@ -20,25 +20,112 @@
 
     <header class="reader-topbar">
 
-        <a href="index.html" class="reader-icon-button" title="Home">
+        <a
+            href="index.html"
+            class="reader-icon-button"
+            title="Home"
+            aria-label="Voltar para a página inicial"
+        >
             ⌂
         </a>
 
-        <button onclick="prevPage()" class="reader-page-button" title="Página anterior">
+        <button
+            type="button"
+            onclick="prevPage()"
+            class="reader-page-button reader-page-mode-control"
+            title="Página anterior"
+            aria-label="Página anterior"
+        >
             &lt;
         </button>
 
-        <button onclick="nextPage()" class="reader-page-button" title="Próxima página">
+        <button
+            type="button"
+            onclick="nextPage()"
+            class="reader-page-button reader-page-mode-control"
+            title="Próxima página"
+            aria-label="Próxima página"
+        >
             &gt;
         </button>
 
-        <a href="chapters.html" class="reader-icon-button" title="Capítulos">
+        <a
+            href="chapters.html"
+            class="reader-icon-button"
+            title="Capítulos"
+            aria-label="Voltar para os capítulos"
+        >
             ☰
         </a>
 
-        <div class="reader-page-jump" aria-label="Ir para página específica">
+        <!-- =========================================
+             CONFIGURAÇÕES DO LEITOR
+        ========================================== -->
 
-            <label for="reader-page-input">PÁGINA</label>
+        <div class="reader-settings">
+
+            <button
+                type="button"
+                id="reader-settings-button"
+                class="reader-icon-button reader-settings-button"
+                title="Configurações de leitura"
+                aria-label="Abrir configurações de leitura"
+                aria-expanded="false"
+                aria-controls="reader-settings-menu"
+            >
+                ⚙
+            </button>
+
+            <div
+                id="reader-settings-menu"
+                class="reader-settings-menu"
+                hidden
+            >
+
+                <span class="reader-settings-title">
+                    MODO DE LEITURA
+                </span>
+
+                <button
+                    type="button"
+                    class="reader-mode-option"
+                    data-reader-mode="page"
+                >
+                    <strong>POR PÁGINA</strong>
+
+                    <small>
+                        Uma página de cada vez.
+                    </small>
+                </button>
+
+                <button
+                    type="button"
+                    class="reader-mode-option"
+                    data-reader-mode="scroll"
+                >
+                    <strong>POR ROLAGEM</strong>
+
+                    <small>
+                        Todas as páginas em sequência.
+                    </small>
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- =========================================
+             IR PARA PÁGINA
+        ========================================== -->
+
+        <div
+            class="reader-page-jump reader-page-mode-control"
+            aria-label="Ir para página específica"
+        >
+
+            <label for="reader-page-input">
+                PÁGINA
+            </label>
 
             <input
                 type="number"
@@ -49,13 +136,20 @@
                 onkeydown="if(event.key === 'Enter'){ goToReaderPage(); }"
             >
 
-            <button type="button" onclick="goToReaderPage()">
+            <button
+                type="button"
+                onclick="goToReaderPage()"
+            >
                 IR
             </button>
 
         </div>
 
     </header>
+
+    <!-- =========================================
+         AVISOS DO LEITOR
+    ========================================== -->
 
     <div
         id="reader-message"
@@ -69,17 +163,42 @@
 
     <main class="reader-container">
 
-        <img id="manga-image" alt="Página do mangá">
+        <!-- =========================================
+             MODO POR PÁGINA
+        ========================================== -->
+
+        <img
+            id="manga-image"
+            alt="Página do mangá"
+        >
+
+        <!-- =========================================
+             MODO POR ROLAGEM
+        ========================================== -->
+
+        <div
+            id="reader-scroll-container"
+            class="reader-scroll-container"
+            hidden
+            aria-live="polite"
+        ></div>
 
         <!-- =========================================
              CAPÍTULO CONCLUÍDO
         ========================================== -->
 
-        <section id="chapter-finished" class="chapter-finished">
+        <section
+            id="chapter-finished"
+            class="chapter-finished"
+        >
 
-            <span>CAPÍTULO CONCLUÍDO</span>
+            <span>
+                CAPÍTULO CONCLUÍDO
+            </span>
 
-            <h1>Você chegou ao fim deste capítulo.</h1>
+            <h1>
+                Você chegou ao fim deste capítulo.
+            </h1>
 
             <p>
                 O próximo capítulo foi desbloqueado, caso já esteja disponível.
@@ -87,11 +206,17 @@
 
             <div class="chapter-finished-buttons">
 
-                <button id="next-chapter-btn">
+                <button
+                    type="button"
+                    id="next-chapter-btn"
+                >
                     PRÓXIMO CAPÍTULO
                 </button>
 
-                <button onclick="window.location.href='chapters.html'">
+                <button
+                    type="button"
+                    onclick="window.location.href='chapters.html'"
+                >
                     VOLTAR AOS CAPÍTULOS
                 </button>
 
@@ -103,31 +228,54 @@
              FRAGMENTO OCULTO
         ========================================== -->
 
-       <div id="hidden-fragment" class="hidden-fragment">
+        <div
+            id="hidden-fragment"
+            class="hidden-fragment"
+        >
 
-    <a href="reader.html?fragment=cap0#cap=0&page=1" id="hidden-fragment-link" title="Fragmento Oculto">
+            <a
+                href="reader.html?fragment=cap0#cap=0&page=1"
+                id="hidden-fragment-link"
+                title="Fragmento Oculto"
+            >
 
-        <span class="fragment-icon">✦</span>
+                <span class="fragment-icon">
+                    ✦
+                </span>
 
-        <span class="fragment-text">
-            Fragmento Oculto
-        </span>
+                <span class="fragment-text">
+                    Fragmento Oculto
+                </span>
 
-    </a>
+            </a>
 
-</div>
+        </div>
 
-        <div class="reader-buttons">
+        <!-- =========================================
+             NAVEGAÇÃO INFERIOR
+        ========================================== -->
 
-            <button onclick="prevPage()">⬅ Página anterior</button>
+        <div class="reader-buttons reader-page-mode-control">
 
-            <button onclick="nextPage()">Próxima página ➜</button>
+            <button
+                type="button"
+                onclick="prevPage()"
+            >
+                ⬅ Página anterior
+            </button>
+
+            <button
+                type="button"
+                onclick="nextPage()"
+            >
+                Próxima página ➜
+            </button>
 
         </div>
 
     </main>
 
-    <script src="script.js?v=26"></script>
+    <script src="script.js?v=27"></script>
 
 </body>
 

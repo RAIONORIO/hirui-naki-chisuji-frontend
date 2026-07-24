@@ -12047,3 +12047,275 @@ body.modal-open {
         padding: 0 6px !important;
     }
 }
+/* =========================================
+   LEITOR - CONFIGURAÇÕES E MODO POR ROLAGEM
+========================================= */
+
+.reader-settings {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.reader-settings-button {
+    padding: 0 !important;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1;
+}
+
+.reader-settings-button[aria-expanded="true"] {
+    background: #8b0000;
+    border-color: #b00000;
+}
+
+.reader-settings-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    z-index: 2000;
+
+    width: 290px;
+    padding: 14px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    background: rgba(8, 8, 8, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.75),
+        0 0 28px rgba(139, 0, 0, 0.16);
+
+    backdrop-filter: blur(12px);
+}
+
+.reader-settings-menu[hidden] {
+    display: none !important;
+}
+
+.reader-settings-title {
+    display: block;
+    padding: 4px 4px 10px;
+
+    color: #bdbdbd;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 3px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.reader-mode-option {
+    width: 100%;
+    min-height: 72px;
+
+    padding: 14px 16px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 7px;
+
+    background: #111111;
+    color: #ffffff;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    text-align: left;
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.reader-mode-option:hover {
+    background: #181818;
+    border-color: rgba(176, 0, 0, 0.75);
+    transform: translateX(3px);
+}
+
+.reader-mode-option.active {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(139, 0, 0, 0.38),
+            rgba(25, 5, 5, 0.95)
+        );
+
+    border-color: #b00000;
+
+    box-shadow:
+        inset 3px 0 0 #d00000,
+        0 0 18px rgba(139, 0, 0, 0.18);
+}
+
+.reader-mode-option strong {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.reader-mode-option small {
+    color: #999999;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0;
+}
+
+.reader-mode-option.active small {
+    color: #d0d0d0;
+}
+
+/* =========================================
+   LEITOR - CONTÊINER DE ROLAGEM
+========================================= */
+
+.reader-scroll-container {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background: #000000;
+}
+
+.reader-scroll-container[hidden] {
+    display: none !important;
+}
+
+.reader-scroll-page {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    position: relative;
+
+    line-height: 0;
+
+    scroll-margin-top: 78px;
+}
+
+.reader-scroll-image {
+    width: 100%;
+    height: auto;
+
+    display: block;
+
+    margin: 0;
+    padding: 0;
+
+    background: #000000;
+}
+
+.reader-scroll-loading,
+.reader-scroll-error {
+    width: min(92%, 720px);
+    margin: 60px auto;
+    padding: 30px;
+
+    background: #0c0c0c;
+    color: #cfcfcf;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.7;
+    letter-spacing: 1px;
+}
+
+.reader-scroll-error {
+    color: #ffb3b3;
+    border-color: rgba(176, 0, 0, 0.5);
+}
+
+/* =========================================
+   ESCONDER CONTROLES DO MODO POR PÁGINA
+========================================= */
+
+.reader-page-mode-control[hidden] {
+    display: none !important;
+}
+
+/* =========================================
+   FRAGMENTO OCULTO NO MODO POR ROLAGEM
+========================================= */
+
+.reader-scroll-page .hidden-fragment {
+    width: 100%;
+    min-height: 90px;
+
+    margin: 0;
+    padding: 24px 20px;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(139, 0, 0, 0.13),
+            transparent 70%
+        ),
+        #050505;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+    line-height: normal;
+}
+
+/* =========================================
+   RESPONSIVO - CONFIGURAÇÕES DO LEITOR
+========================================= */
+
+@media (max-width: 768px) {
+
+    .reader-settings-menu {
+        position: fixed;
+        top: 67px;
+        right: 10px;
+
+        width: min(290px, calc(100vw - 20px));
+    }
+
+    .reader-scroll-page {
+        scroll-margin-top: 67px;
+    }
+
+    .reader-scroll-loading,
+    .reader-scroll-error {
+        margin: 40px auto;
+        padding: 24px 18px;
+        font-size: 14px;
+    }
+
+}
+
+@media (max-width: 380px) {
+
+    .reader-settings-menu {
+        top: 61px;
+        right: 6px;
+
+        width: calc(100vw - 12px);
+    }
+
+    .reader-mode-option {
+        min-height: 66px;
+        padding: 12px 14px;
+    }
+
+    .reader-mode-option strong {
+        font-size: 12px;
+    }
+
+}

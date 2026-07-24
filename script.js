@@ -798,6 +798,669 @@ function prevPage(){
 }
 
 /* =========================================
+   MODOS DE LEITURA
+========================================= */
+
+const READER_MODE_STORAGE_KEY = "hiruiReaderMode";
+
+const readerScrollContainer =
+    document.getElementById("reader-scroll-container");
+
+const readerSettingsButton =
+    document.getElementById("reader-settings-button");
+
+const readerSettingsMenu =
+    document.getElementById("reader-settings-menu");
+
+const readerModeOptions =
+    document.querySelectorAll("[data-reader-mode]");
+
+const readerPageModeControls =
+    document.querySelectorAll(".reader-page-mode-control");
+
+const hiddenFragmentOriginalParent =
+    hiddenFragment ? hiddenFragment.parentNode : null;
+
+const hiddenFragmentOriginalNextSibling =
+    hiddenFragment ? hiddenFragment.nextSibling : null;
+
+let readerMode =
+    localStorage.getItem(READER_MODE_STORAGE_KEY) === "scroll"
+        ? "scroll"
+        : "page";
+
+let readerScrollObserver = null;
+
+let lastScrollSavedPage = null;
+
+
+function restoreHiddenFragmentPosition() {
+
+    if (
+        !hiddenFragment
+        || !hiddenFragmentOriginalParent
+    ) {
+        return;
+    }
+
+    if (
+        hiddenFragmentOriginalNextSibling
+        && hiddenFragmentOriginalNextSibling.parentNode
+            === hiddenFragmentOriginalParent
+    ) {
+
+        hiddenFragmentOriginalParent.insertBefore(
+            hiddenFragment,
+            hiddenFragmentOriginalNextSibling
+        );
+
+        return;
+
+    }
+
+    hiddenFragmentOriginalParent.appendChild(
+        hiddenFragment
+    );
+
+}
+
+
+function setReaderPageControlsVisible(isVisible) {
+
+    readerPageModeControls.forEach((control) => {
+
+        control.hidden = !isVisible;
+
+    });
+
+}
+
+
+function updateReaderModeOptions() {
+
+    readerModeOptions.forEach((option) => {
+
+        const isActive =
+            option.dataset.readerMode === readerMode;
+
+        option.classList.toggle(
+            "active",
+            isActive
+        );
+
+        option.setAttribute(
+            "aria-pressed",
+            String(isActive)
+        );
+
+    });
+
+}
+
+
+function closeReaderSettingsMenu() {
+
+    if (!readerSettingsMenu) {
+        return;
+    }
+
+    readerSettingsMenu.hidden = true;
+
+    if (readerSettingsButton) {
+
+        readerSettingsButton.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+    }
+
+}
+
+
+function toggleReaderSettingsMenu() {
+
+    if (!readerSettingsMenu) {
+        return;
+    }
+
+    const shouldOpen =
+        readerSettingsMenu.hidden;
+
+    readerSettingsMenu.hidden =
+        !shouldOpen;
+
+    if (readerSettingsButton) {
+
+        readerSettingsButton.setAttribute(
+            "aria-expanded",
+            String(shouldOpen)
+        );
+
+    }
+
+}
+
+
+function disconnectReaderScrollObserver() {
+
+    if (!readerScrollObserver) {
+        return;
+    }
+
+    readerScrollObserver.disconnect();
+
+    readerScrollObserver = null;
+
+}
+
+
+function updateScrollReadingProgress(pageNumber) {
+
+    if (
+        !Number.isInteger(pageNumber)
+        || pageNumber < 1
+        || pageNumber === lastScrollSavedPage
+    ) {
+        return;
+    }
+
+    currentPage =
+        pageNumber;
+
+    lastScrollSavedPage =
+        pageNumber;
+
+    window.history.replaceState(
+        null,
+        "",
+        `${window.location.pathname}${window.location.search}`
+        + `#cap=${currentChapter}&page=${currentPage}`
+    );
+
+    updateReaderPageInput();
+
+    saveReadingProgress();
+
+    const pageLimit =
+        readerChapterPageLimitCache[currentChapter]
+        || READER_CHAPTER_PAGE_LIMIT_FALLBACK[currentChapter];
+
+    const finishedBox =
+        document.getElementById("chapter-finished");
+
+    if (
+        pageLimit
+        && pageNumber >= pageLimit
+    ) {
+
+        showChapterFinished();
+
+    } else if (finishedBox) {
+
+        finishedBox.classList.remove(
+            "active"
+        );
+
+    }
+
+}
+
+
+function startReaderScrollObserver() {
+
+    disconnectReaderScrollObserver();
+
+    if (!readerScrollContainer) {
+        return;
+    }
+
+    readerScrollObserver =
+        new IntersectionObserver(
+            (entries) => {
+
+                const visibleEntries =
+                    entries
+                    .filter((entry) => {
+                        return entry.isIntersecting;
+                    })
+                    .sort((firstEntry, secondEntry) => {
+
+                        return (
+                            secondEntry.intersectionRatio
+                            - firstEntry.intersectionRatio
+                        );
+
+                    });
+
+                if (visibleEntries.length === 0) {
+                    return;
+                }
+
+                const pageNumber =
+                    Number(
+                        visibleEntries[0]
+                        .target
+                        .dataset
+                        .readerPage
+                    );
+
+                updateScrollReadingProgress(
+                    pageNumber
+                );
+
+            },
+            {
+                root: null,
+                rootMargin: "-18% 0px -64% 0px",
+                threshold: 0
+            }
+        );
+
+    readerScrollContainer
+        .querySelectorAll(".reader-scroll-page")
+        .forEach((pageElement) => {
+
+            readerScrollObserver.observe(
+                pageElement
+            );
+
+        });
+
+}
+
+
+function createReaderScrollPage(page) {
+
+    const pageElement =
+        document.createElement("section");
+
+    pageElement.className =
+        "reader-scroll-page";
+
+    pageElement.dataset.readerPage =
+        String(page.page_number);
+
+    const image =
+        document.createElement("img");
+
+    image.className =
+        "reader-scroll-image";
+
+    image.src =
+        normalizeBackendImageUrl(
+            page.image_url
+        );
+
+    image.alt =
+        `Capítulo ${currentChapter}, página ${page.page_number}`;
+
+    image.loading =
+        Number(page.page_number) <= 2
+            ? "eager"
+            : "lazy";
+
+    image.decoding =
+        "async";
+
+    image.addEventListener(
+        "error",
+        function () {
+
+            const errorMessage =
+                document.createElement("div");
+
+            errorMessage.className =
+                "reader-scroll-error";
+
+            errorMessage.textContent =
+                `Não foi possível carregar a página ${page.page_number}.`;
+
+            this.replaceWith(
+                errorMessage
+            );
+
+        }
+    );
+
+    pageElement.appendChild(
+        image
+    );
+
+    if (
+        currentChapter === 1
+        && Number(page.page_number) === 6
+        && hiddenFragment
+    ) {
+
+        pageElement.appendChild(
+            hiddenFragment
+        );
+
+        hiddenFragment.style.display =
+            "flex";
+
+    }
+
+    return pageElement;
+
+}
+
+
+async function loadReaderScrollMode() {
+
+    if (!readerScrollContainer) {
+        return;
+    }
+
+    disconnectReaderScrollObserver();
+
+    restoreHiddenFragmentPosition();
+
+    if (hiddenFragment) {
+
+        hiddenFragment.style.display =
+            "none";
+
+    }
+
+    if (mangaImage) {
+
+        mangaImage.style.display =
+            "none";
+
+    }
+
+    const finishedBox =
+        document.getElementById("chapter-finished");
+
+    if (finishedBox) {
+
+        finishedBox.classList.remove(
+            "active"
+        );
+
+    }
+
+    readerScrollContainer.hidden =
+        false;
+
+    readerScrollContainer.innerHTML = `
+        <div class="reader-scroll-loading">
+            Carregando capítulo...
+        </div>
+    `;
+
+    try {
+
+        const response =
+            await fetch(
+                `${HIRUI_API_BASE}/chapters/${currentChapter}/pages`
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Não foi possível buscar as páginas do capítulo."
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        if (
+            !data.success
+            || !Array.isArray(data.pages)
+            || data.pages.length === 0
+        ) {
+
+            throw new Error(
+                data.message
+                || "Nenhuma página encontrada para este capítulo."
+            );
+
+        }
+
+        const pages =
+            data.pages
+            .map((page) => ({
+                ...page,
+                page_number: Number(
+                    page.page_number
+                )
+            }))
+            .filter((page) => {
+
+                return (
+                    Number.isInteger(page.page_number)
+                    && page.page_number > 0
+                );
+
+            })
+            .sort((firstPage, secondPage) => {
+
+                return (
+                    firstPage.page_number
+                    - secondPage.page_number
+                );
+
+            });
+
+        readerChapterPageLimitCache[currentChapter] =
+            Math.max(
+                ...pages.map((page) => {
+                    return page.page_number;
+                })
+            );
+
+        readerScrollContainer.innerHTML =
+            "";
+
+        pages.forEach((page) => {
+
+            readerScrollContainer.appendChild(
+                createReaderScrollPage(page)
+            );
+
+        });
+
+        startReaderScrollObserver();
+
+        const targetPage =
+            readerScrollContainer.querySelector(
+                `[data-reader-page="${currentPage}"]`
+            )
+            || readerScrollContainer.querySelector(
+                ".reader-scroll-page"
+            );
+
+        if (targetPage) {
+
+            window.requestAnimationFrame(() => {
+
+                targetPage.scrollIntoView({
+                    behavior: "auto",
+                    block: "start"
+                });
+
+            });
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Erro ao carregar leitura por rolagem:",
+            error
+        );
+
+        readerScrollContainer.innerHTML = `
+            <div class="reader-scroll-error">
+                Não foi possível carregar o capítulo por rolagem.
+            </div>
+        `;
+
+    }
+
+}
+
+
+async function setReaderMode(
+    mode,
+    isInitialLoad = false
+) {
+
+    const nextMode =
+        mode === "scroll"
+            ? "scroll"
+            : "page";
+
+    if (
+        !isInitialLoad
+        && nextMode === readerMode
+    ) {
+
+        closeReaderSettingsMenu();
+
+        return;
+
+    }
+
+    readerMode =
+        nextMode;
+
+    localStorage.setItem(
+        READER_MODE_STORAGE_KEY,
+        readerMode
+    );
+
+    updateReaderModeOptions();
+
+    closeReaderSettingsMenu();
+
+    if (readerMode === "scroll") {
+
+        setReaderPageControlsVisible(
+            false
+        );
+
+        await loadReaderScrollMode();
+
+        if (!isInitialLoad) {
+
+            showReaderMessage(
+                "Modo de leitura por rolagem ativado."
+            );
+
+        }
+
+        return;
+
+    }
+
+    disconnectReaderScrollObserver();
+
+    setReaderPageControlsVisible(
+        true
+    );
+
+    if (readerScrollContainer) {
+
+        readerScrollContainer.hidden =
+            true;
+
+        readerScrollContainer.innerHTML =
+            "";
+
+    }
+
+    restoreHiddenFragmentPosition();
+
+    await loadPage(
+        currentPage
+    );
+
+    if (!isInitialLoad) {
+
+        showReaderMessage(
+            "Modo de leitura por página ativado."
+        );
+
+    }
+
+}
+
+
+function setupReaderSettings() {
+
+    updateReaderModeOptions();
+
+    if (readerSettingsButton) {
+
+        readerSettingsButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                toggleReaderSettingsMenu();
+
+            }
+        );
+
+    }
+
+    readerModeOptions.forEach((option) => {
+
+        option.addEventListener(
+            "click",
+            function () {
+
+                setReaderMode(
+                    this.dataset.readerMode
+                );
+
+            }
+        );
+
+    });
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                readerSettingsMenu
+                && !readerSettingsMenu.hidden
+                && !event.target.closest(
+                    ".reader-settings"
+                )
+            ) {
+
+                closeReaderSettingsMenu();
+
+            }
+
+        }
+    );
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Escape") {
+
+                closeReaderSettingsMenu();
+
+            }
+
+        }
+    );
+
+}
+
+/* =========================================
    INICIAR LEITOR
 ========================================= */
 
@@ -856,15 +1519,23 @@ async function startReader(){
 
     if(!canAccess){
 
-        alert("Este fragmento ainda está oculto.");
+        alert(
+            "Este fragmento ainda está oculto."
+        );
 
-        window.location.href = "chapters.html";
+        window.location.href =
+            "chapters.html";
 
         return;
 
     }
 
-    loadPage(currentPage);
+    setupReaderSettings();
+
+    await setReaderMode(
+        readerMode,
+        true
+    );
 
 }
 
